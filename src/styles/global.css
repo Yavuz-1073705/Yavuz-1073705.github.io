@@ -1,0 +1,602 @@
+/* Kleuren in BMW / M-stijl, donker thema */
+:root {
+	--achtergrond: #0d0e10;
+	--vlak: #16181c;
+	--lijn: #2a2c31;
+	--tekst: #e8e9eb;
+	--tekst-zacht: #9a9ea6;
+	--wit: #ffffff;
+	--bmw-blauw: #1c69d4;
+	--link: #4d94ff;
+	--m-lichtblauw: #009ada;
+	--m-donkerblauw: #0653b6;
+	--m-rood: #e7222e;
+	--m-strepen: linear-gradient(
+		90deg,
+		var(--m-lichtblauw) 0 33.33%,
+		var(--m-donkerblauw) 33.33% 66.66%,
+		var(--m-rood) 66.66% 100%
+	);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+	background: var(--achtergrond);
+	color: var(--tekst);
+	font-family: 'Helvetica Neue', Arial, system-ui, sans-serif;
+	font-size: 1.05rem;
+	line-height: 1.65;
+}
+
+/* M-strepen bovenaan de pagina */
+body::before {
+	content: '';
+	display: block;
+	height: 5px;
+	background: var(--m-strepen);
+}
+
+header,
+main,
+body > footer {
+	max-width: 60rem;
+	margin: 0 auto;
+	padding: 0 1.25rem;
+}
+
+/* ---------- Navigatie ---------- */
+header {
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	background: var(--achtergrond);
+}
+
+nav {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem 1.75rem;
+	padding: 1.1rem 0;
+	border-bottom: 1px solid var(--lijn);
+}
+
+nav a {
+	color: var(--tekst-zacht);
+	text-decoration: none;
+	font-size: 0.8rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
+}
+
+nav a:hover {
+	color: var(--wit);
+}
+
+nav .logo {
+	margin-right: auto;
+}
+
+.logo {
+	color: var(--wit);
+	font-size: 1rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+}
+
+.logo b {
+	color: var(--m-rood);
+}
+
+/* ---------- Algemeen ---------- */
+section {
+	padding: 5rem 0;
+	border-bottom: 1px solid var(--lijn);
+	scroll-margin-top: 3.5rem;
+}
+
+h1,
+h2 {
+	font-weight: 300;
+	text-transform: uppercase;
+	color: var(--wit);
+	line-height: 1.1;
+}
+
+h2 {
+	font-size: clamp(1.8rem, 4vw, 2.5rem);
+	letter-spacing: 0.03em;
+	margin: 0 0 2rem;
+}
+
+h2::after {
+	content: '';
+	display: block;
+	width: 4rem;
+	height: 4px;
+	margin-top: 1rem;
+	background: var(--m-strepen);
+}
+
+h3 {
+	font-size: 1rem;
+	color: var(--wit);
+	margin: 0 0 0.5rem;
+}
+
+h3 small {
+	display: block;
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	color: var(--tekst-zacht);
+}
+
+p {
+	margin: 0 0 1rem;
+}
+
+a {
+	color: var(--link);
+}
+
+ul,
+ol {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.groot {
+	font-size: 1.25rem;
+	line-height: 1.55;
+	color: var(--wit);
+	max-width: 44rem;
+}
+
+/* Klein label boven een sectie, zoals "01 / Driver profile" */
+.label {
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	color: var(--m-lichtblauw);
+	margin-bottom: 0.75rem;
+}
+
+/* ---------- Intro ---------- */
+.intro {
+	display: grid;
+	grid-template-columns: 1fr 17rem;
+	column-gap: 2.5rem;
+	padding: 5rem 0 4rem;
+}
+
+.intro > * {
+	grid-column: 1;
+}
+
+.intro h1 {
+	font-size: clamp(3rem, 9vw, 5.5rem);
+	letter-spacing: 0.02em;
+	margin: 0 0 1rem;
+}
+
+.intro h1 span {
+	font-weight: 800;
+}
+
+.ondertitel {
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: var(--wit);
+}
+
+.ondertitel::after {
+	content: '';
+	display: block;
+	width: 6rem;
+	height: 5px;
+	margin-top: 1rem;
+	background: var(--m-strepen);
+}
+
+.intro p {
+	max-width: 36rem;
+}
+
+.intro-plaatje {
+	grid-column: 2;
+	grid-row: 1 / span 5;
+	align-self: center;
+	width: 100%;
+	height: auto;
+}
+
+/* Specificaties onder de intro */
+.feiten {
+	grid-column: 1 / -1;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+	gap: 1px;
+	margin: 3rem 0 0;
+	background: var(--lijn);
+	border: 1px solid var(--lijn);
+}
+
+.feiten div {
+	background: var(--vlak);
+	padding: 1.1rem 1.25rem;
+}
+
+.feiten dt {
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	color: var(--tekst-zacht);
+}
+
+.feiten dd {
+	margin: 0.25rem 0 0;
+	font-size: 1.15rem;
+	font-weight: 700;
+	color: var(--wit);
+}
+
+.feiten small {
+	display: block;
+	font-size: 0.8rem;
+	font-weight: 400;
+	color: var(--tekst-zacht);
+}
+
+/* ---------- Knoppen ---------- */
+.knoppen {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	margin-top: 2rem;
+}
+
+.knop {
+	display: inline-block;
+	padding: 0.9rem 1.75rem;
+	background: var(--bmw-blauw);
+	border: 1px solid var(--bmw-blauw);
+	color: var(--wit);
+	text-decoration: none;
+	font-size: 0.85rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+}
+
+.knop:hover {
+	background: #0f4fa8;
+}
+
+.knop-rustig {
+	background: transparent;
+	border-color: var(--lijn);
+}
+
+.knop-rustig:hover {
+	background: var(--vlak);
+}
+
+/* ---------- Profiel ---------- */
+.twee-kolommen {
+	display: grid;
+	grid-template-columns: 1fr 20rem;
+	gap: 3rem;
+	align-items: start;
+}
+
+.datakaart {
+	background: var(--vlak);
+	border: 1px solid var(--lijn);
+	border-top: 4px solid var(--bmw-blauw);
+	padding: 1.5rem;
+}
+
+.datakaart h3 {
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	color: var(--tekst-zacht);
+}
+
+.datakaart table {
+	margin-bottom: 1.5rem;
+}
+
+.datakaart table:last-child {
+	margin-bottom: 0;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.9rem;
+}
+
+th,
+td {
+	text-align: left;
+	padding: 0.5rem 0;
+	border-bottom: 1px solid var(--lijn);
+	vertical-align: top;
+}
+
+th {
+	width: 5.5rem;
+	font-weight: 400;
+	color: var(--tekst-zacht);
+}
+
+td {
+	color: var(--wit);
+}
+
+.blauw {
+	color: var(--link);
+	font-weight: 700;
+}
+
+/* ---------- Woorden (kwaliteiten en toolbox) ---------- */
+.woorden {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-top: 1.5rem;
+}
+
+.woorden li {
+	background: var(--vlak);
+	border: 1px solid var(--lijn);
+	padding: 0.35rem 0.9rem;
+	font-size: 0.9rem;
+}
+
+.woorden li:hover {
+	border-color: var(--bmw-blauw);
+}
+
+/* ---------- Meters (skills) ---------- */
+.meters {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+	gap: 1rem;
+	margin: 2rem 0 3rem;
+}
+
+.meters li {
+	background: var(--vlak);
+	border: 1px solid var(--lijn);
+	padding: 1.5rem;
+}
+
+/* De balk loopt tot 10.000 rpm. Het rode stuk rechts is de redline vanaf 8.000 rpm. */
+.meter {
+	height: 8px;
+	margin: 1rem 0 0.5rem;
+	background: linear-gradient(90deg, var(--lijn) 80%, #5a1a1e 80%);
+}
+
+.meter span {
+	display: block;
+	height: 100%;
+	background: linear-gradient(90deg, var(--m-lichtblauw), var(--m-donkerblauw));
+}
+
+.rpm {
+	margin: 0;
+	font-size: 1.8rem;
+	font-weight: 300;
+	color: var(--wit);
+}
+
+.rpm small {
+	font-size: 0.75rem;
+	color: var(--tekst-zacht);
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+}
+
+#performance > h3 {
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	color: var(--tekst-zacht);
+}
+
+/* ---------- Tijdlijn ---------- */
+.tijdlijn {
+	border-left: 3px solid var(--lijn);
+	margin-left: 0.5rem;
+}
+
+.tijdlijn li {
+	position: relative;
+	padding: 0 0 2.5rem 2rem;
+	max-width: 44rem;
+}
+
+.tijdlijn li::before {
+	content: '';
+	position: absolute;
+	left: -10px;
+	top: 0.25rem;
+	width: 17px;
+	height: 17px;
+	background: var(--achtergrond);
+	border: 3px solid var(--bmw-blauw);
+	border-radius: 50%;
+}
+
+.tijdlijn li:first-child::before {
+	background: var(--m-rood);
+	border-color: var(--m-rood);
+}
+
+.wanneer {
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	color: var(--m-lichtblauw);
+	margin: 0;
+}
+
+.tijdlijn p:last-child {
+	color: var(--tekst-zacht);
+	margin: 0;
+}
+
+/* ---------- Kaarten ---------- */
+.kaarten {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+	gap: 1rem;
+	margin: 2rem 0;
+}
+
+.kaarten li {
+	background: var(--vlak);
+	border: 1px solid var(--lijn);
+	border-top: 4px solid var(--m-lichtblauw);
+	padding: 1.75rem;
+}
+
+.kaarten li:nth-child(2) {
+	border-top-color: var(--m-donkerblauw);
+}
+
+.kaarten li:nth-child(3) {
+	border-top-color: var(--m-rood);
+}
+
+.kaarten p {
+	color: var(--tekst-zacht);
+	margin: 0;
+}
+
+.kaarten .nummer {
+	font-size: 2.2rem;
+	font-weight: 300;
+	line-height: 1;
+	color: var(--link);
+	margin-bottom: 1rem;
+}
+
+/* ---------- Quote ---------- */
+.uitgelicht {
+	margin: 3rem 0 0;
+	padding: 0.5rem 0 0.5rem 1.75rem;
+	border-left: 4px solid var(--m-rood);
+}
+
+.uitgelicht p {
+	font-size: clamp(1.3rem, 3vw, 1.75rem);
+	font-weight: 300;
+	line-height: 1.4;
+	color: var(--wit);
+	margin: 0 0 0.75rem;
+}
+
+.uitgelicht footer {
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	color: var(--tekst-zacht);
+}
+
+/* ---------- Contact ---------- */
+#contact {
+	border-bottom: none;
+}
+
+.contact {
+	margin: 2rem 0;
+	border-top: 1px solid var(--lijn);
+	max-width: 36rem;
+}
+
+.contact li {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: 0.25rem 1rem;
+	padding: 1rem 0;
+	border-bottom: 1px solid var(--lijn);
+}
+
+.contact span {
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.15em;
+	color: var(--tekst-zacht);
+}
+
+.contact a {
+	color: var(--wit);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.contact a:hover {
+	color: var(--link);
+}
+
+/* ---------- Footer ---------- */
+body > footer {
+	padding-top: 2.5rem;
+	padding-bottom: 3rem;
+	border-top: 1px solid var(--lijn);
+	color: var(--tekst-zacht);
+	font-size: 0.9rem;
+}
+
+body > footer p {
+	margin: 0 0 0.5rem;
+}
+
+body > footer b {
+	color: var(--wit);
+}
+
+body > footer .klein {
+	margin-top: 1.5rem;
+	font-size: 0.75rem;
+}
+
+/* ---------- Mobiel ---------- */
+@media (max-width: 48rem) {
+	.intro,
+	.twee-kolommen {
+		grid-template-columns: 1fr;
+	}
+	.intro-plaatje {
+		grid-column: 1;
+		grid-row: auto;
+		max-width: 14rem;
+		margin-top: 2rem;
+	}
+	nav .logo {
+		width: 100%;
+	}
+	section {
+		padding: 3.5rem 0;
+	}
+}

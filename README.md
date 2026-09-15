@@ -14,7 +14,10 @@ Daarna naar http://localhost:4321.
 ## Bestanden
 
 - `src/pages/index.astro`: de pagina (HTML)
-- `public/style.css`: de opmaak (CSS)
+- `src/styles/global.css`: de opmaak (CSS)
+- `public/afbeeldingen/`: plaatjes
+
+Geen JavaScript nodig. De lengte van een skill-balk pas je aan met `style="width: 88%"` in `index.astro`.
 - `.github/workflows/deploy.yml`: zet de site automatisch online na een push naar `main`
 
 ## Online zetten
