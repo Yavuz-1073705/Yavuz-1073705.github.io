@@ -1,6 +1,6 @@
 # yavuz-1073705.github.io
 
-Persoonlijke website van Yavuz Atilgan. Gewone HTML en CSS, gebouwd met [Astro](https://astro.build) en gehost op GitHub Pages.
+Persoonlijke portfolio van Yavuz Atilgan. HTML, CSS en vanilla JavaScript, gebouwd met [Astro](https://astro.build) en gehost op GitHub Pages.
 
 ## Lokaal draaien
 
@@ -13,12 +13,11 @@ Daarna naar http://localhost:4321.
 
 ## Bestanden
 
-- `src/pages/index.astro`: de pagina (HTML)
-- `src/styles/global.css`: de opmaak (CSS)
+- `src/pages/index.astro`: de hele pagina (HTML, CSS en JavaScript)
 - `public/afbeeldingen/`: plaatjes
-
-Geen JavaScript nodig. De lengte van een skill-balk pas je aan met `style="width: 88%"` in `index.astro`.
 - `.github/workflows/deploy.yml`: zet de site automatisch online na een push naar `main`
+
+De skill-meters pas je aan in de `SKILLS`-lijst onderaan `index.astro` (rpm van 0 tot 9).
 
 ## Online zetten
 

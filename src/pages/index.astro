@@ -1,342 +1,1883 @@
 ---
-import '../styles/global.css';
+// Portfolio page: plain HTML, CSS and vanilla JS (no framework code).
 ---
 
 <html lang="en">
-
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>Yavuz Atilgan · Software Engineer</title>
-	<meta name="description"
-		content="Yavuz Atilgan, software engineering student. Front-end, back-end, full stack and AI. Looking for a graduation internship at BMW from February 2027." />
+	<title>Yavuz Atilgan Portfolio</title>
+	<meta name="description" content="Yavuz Atilgan, software engineering student and AI specialist. Front-end, back-end and full stack." />
 	<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@500;600;700&display=swap">
+	<style is:global>
+/* ============================================================
+   YAVUZ ATILGAN - PORTFOLIO
+   BMW / M-inspired design system
+   ============================================================ */
+
+/* ---------- 1. TOKENS ---------- */
+:root{
+  /* M stripe palette */
+  --m-light:#009ADA;
+  --m-blue:#0653B6;
+  --m-red:#E7222E;
+  --bmw:#0066B1;
+
+  /* neutrals */
+  --ink:#08090B;
+  --ink-2:#0C0E11;
+  --panel:#12151A;
+  --panel-2:#171B21;
+  --line:rgba(255,255,255,.09);
+  --line-2:rgba(255,255,255,.16);
+  --text:#EDEFF2;
+  --muted:#8B939D;
+  --muted-2:#5F666F;
+
+  /* accent (switches in M mode) */
+  --accent:var(--m-light);
+  --accent-soft:rgba(0,154,218,.14);
+
+  --wrap:1180px;
+  --pad:clamp(20px,5vw,56px);
+  --r:2px;
+
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+
+  --mono:"Barlow Condensed",'Inter',system-ui,sans-serif;
+  --sans:'Inter',system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+
+body.m-mode{ --accent:var(--m-red); --accent-soft:rgba(231,34,46,.16); }
+
+/* ---------- 2. RESET / BASE ---------- */
+*,*::before,*::after{ box-sizing:border-box }
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100% }
+body{
+  margin:0;
+  background:var(--ink);
+  color:var(--text);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body.is-booting{ overflow:hidden; height:100vh }
+body.nav-open{ overflow:hidden; position:fixed; left:0; right:0; width:100% }
+img,svg{ max-width:100% }
+h1,h2,h3{ margin:0; line-height:1.02; letter-spacing:-.035em; font-weight:800 }
+p{ margin:0 0 1.1em }
+a{ color:inherit; text-decoration:none }
+ul,ol{ margin:0; padding:0; list-style:none }
+kbd{
+  font-family:var(--sans); font-size:10px; font-weight:600; letter-spacing:.06em;
+  border:1px solid var(--line-2); border-radius:3px; padding:1px 5px;
+  background:rgba(255,255,255,.05);
+}
+::selection{ background:var(--accent); color:#fff }
+
+.wrap{ width:100%; max-width:var(--wrap); margin:0 auto; padding:0 var(--pad) }
+
+/* ---------- the YSA roundel ---------- */
+.roundel{ display:block }
+.rd-rim{ fill:#EEF2F6 }
+.rd-ring{ fill:#08090B }
+.rd-inner{ fill:#FFFFFF }
+.rd-q{ fill:#0C6EC6; transition:fill .4s }
+body.m-mode .rd-q{ fill:var(--m-red) }
+.rd-txt text{
+  font-family:var(--sans); font-size:17.5px; font-weight:800;
+  fill:#FFFFFF;
+}
+
+/* ---------- 3. SHARED ATOMS ---------- */
+.ico{ width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:square; flex:0 0 auto }
+
+.btn{
+  --bg:var(--text); --fg:#0A0C0F;
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--bg); color:var(--fg);
+  font-size:13px; font-weight:700; letter-spacing:.02em;
+  padding:15px 24px; border:1px solid var(--bg); border-radius:var(--r);
+  position:relative; overflow:hidden; isolation:isolate;
+  transition:color .35s var(--ease), border-color .35s var(--ease);
+}
+.btn::after{
+  content:""; position:absolute; inset:0; z-index:-1;
+  background:linear-gradient(90deg,var(--m-light),var(--m-blue) 55%,var(--m-red));
+  transform:translateX(-101%); transition:transform .5s var(--ease-out);
+}
+.btn:hover{ color:#fff; border-color:transparent }
+.btn:hover::after{ transform:translateX(0) }
+.btn .ico{ transition:transform .35s var(--ease) }
+.btn:hover .ico{ transform:translateX(4px) }
+.btn--ghost{ --bg:transparent; --fg:var(--text); border-color:var(--line-2) }
+.btn--sm{ padding:10px 16px; font-size:12px }
+.btn--block{ width:100%; justify-content:space-between; margin-top:14px }
+
+/* eyebrow + section labels */
+.eyebrow,.sec__label{
+  font-family:var(--mono); font-size:13px; font-weight:600;
+  letter-spacing:.22em; text-transform:uppercase; color:var(--muted);
+  display:flex; align-items:center; gap:12px; margin:0 0 22px;
+}
+.eyebrow em,.sec__label em{ color:var(--muted-2); font-style:normal }
+.eyebrow__tick,.sec__label i{
+  width:34px; height:3px; flex:0 0 auto; border-radius:2px;
+  background:linear-gradient(90deg,var(--m-light) 0 33.3%,var(--m-blue) 33.3% 66.6%,var(--m-red) 66.6%);
+}
+.sec__label--center{ justify-content:center }
+
+.sec{ padding:clamp(84px,11vw,150px) 0; position:relative }
+.sec--alt{ background:var(--ink-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line) }
+.sec__head{ margin-bottom:clamp(44px,6vw,72px); max-width:760px }
+.sec__head--center{ margin-inline:auto; text-align:center }
+.sec__title{ font-size:clamp(34px,6vw,62px) }
+.sec__sub{ color:var(--muted); font-size:17px; margin:20px 0 0; max-width:60ch }
+.sec__head--center .sec__sub{ margin-inline:auto }
+
+.tags{ display:flex; flex-wrap:wrap; gap:8px; margin-top:26px }
+.tags li{
+  font-family:var(--mono); font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); border:1px solid var(--line); border-radius:var(--r);
+  padding:6px 12px; background:rgba(255,255,255,.02);
+  transition:color .3s,border-color .3s,background .3s;
+}
+.tags li:hover{ color:var(--text); border-color:var(--accent); background:var(--accent-soft) }
+.tags--lg{ gap:10px }
+.tags--lg li{ font-size:14px; padding:9px 15px }
+
+/* reveal-on-scroll */
+.reveal{ opacity:0; transform:translateY(26px); transition:opacity .8s var(--ease-out),transform .8s var(--ease-out) }
+.reveal.in{ opacity:1; transform:none }
+
+/* ============================================================
+   4. BOOT SCREEN
+   ============================================================ */
+.boot{
+  position:fixed; inset:0; z-index:200;
+  background:#05070A;
+  display:grid; place-items:center;
+  overflow:hidden;
+}
+.boot.done{ pointer-events:none }
+.boot.gone{ display:none }
+
+.boot__stripes{ position:absolute; top:0; left:0; right:0; height:3px; display:flex; z-index:3 }
+.boot__stripes i{ flex:1; transform:scaleX(0); transform-origin:left; animation:bootStripe .7s var(--ease-out) forwards }
+.boot__stripes i:nth-child(1){ background:var(--m-light) }
+.boot__stripes i:nth-child(2){ background:var(--m-blue); animation-delay:.1s }
+.boot__stripes i:nth-child(3){ background:var(--m-red); animation-delay:.2s }
+@keyframes bootStripe{ to{ transform:scaleX(1) } }
+
+.boot__center{ position:relative; z-index:4; display:grid; justify-items:center; gap:26px; padding:24px; text-align:center }
+
+.boot__mark{ width:clamp(124px,19vw,168px); height:auto; animation:bootPop .9s var(--ease-out) both }
+@keyframes bootPop{ from{ opacity:0; transform:scale(.86) } to{ opacity:1; transform:none } }
+.boot__ring-bg{ fill:none; stroke:rgba(255,255,255,.08); stroke-width:3 }
+.boot__ring{
+  fill:none; stroke-width:3; stroke-linecap:round;
+  stroke-dasharray:358; stroke-dashoffset:358;
+  transform:rotate(-90deg); transform-origin:50px 50px;
+  animation:bootRing 2.3s var(--ease) .25s forwards;
+}
+@keyframes bootRing{ to{ stroke-dashoffset:0 } }
+@keyframes bootFade{ to{ opacity:1 } }
+
+.boot__title{
+  font-family:var(--mono); font-size:14px; font-weight:600;
+  letter-spacing:.34em; text-transform:uppercase; color:#fff;
+}
+.boot__title span{ color:var(--m-light); letter-spacing:.2em }
+.boot__log{
+  font-family:var(--mono); font-size:13px; letter-spacing:.09em; color:var(--muted);
+  margin-top:12px; min-height:7.4em; text-align:left; width:min(400px,86vw);
+}
+.boot__log div{ display:flex; justify-content:space-between; gap:10px; opacity:0; animation:bootFade .3s forwards }
+.boot__log b{ color:#3FCF6E; font-weight:600 }
+.boot__log b.warn{ color:var(--m-light) }
+
+.boot__bar{ display:flex; align-items:center; gap:16px; width:min(400px,86vw) }
+.boot__bar-track{ flex:1; height:2px; background:rgba(255,255,255,.12); overflow:hidden }
+.boot__bar-fill{
+  height:100%; width:0%;
+  background:linear-gradient(90deg,var(--m-light),var(--m-blue) 50%,var(--m-red));
+}
+.boot__bar-num{ font-family:var(--mono); font-size:15px; letter-spacing:.08em; color:#fff; min-width:46px; text-align:right }
+.boot__bar-num em{ font-style:normal; color:var(--muted-2); font-size:11px; margin-left:2px }
+
+.boot__skip{
+  position:absolute; bottom:28px; right:28px; z-index:5;
+  background:none; border:0; cursor:pointer; color:var(--muted-2);
+  font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase;
+  display:flex; align-items:center; gap:8px; transition:color .3s;
+}
+.boot__skip:hover{ color:#fff }
+
+/* curtain split reveal */
+.boot__curtain{ position:absolute; top:0; bottom:0; width:51%; background:#05070A; z-index:2; transition:transform 1s var(--ease-out) }
+.boot__curtain--l{ left:0 }
+.boot__curtain--r{ right:0 }
+.boot__curtain--r::before,.boot__curtain--l::before{
+  content:""; position:absolute; top:0; bottom:0; width:1px;
+  background:linear-gradient(180deg,transparent,var(--m-light),transparent); opacity:0; transition:opacity .3s;
+}
+.boot__curtain--l::before{ right:0 }
+.boot__curtain--r::before{ left:0 }
+.boot.done .boot__center,.boot.done .boot__skip,.boot.done .boot__stripes{ opacity:0; transition:opacity .3s }
+.boot.done .boot__curtain::before{ opacity:1 }
+.boot.done .boot__curtain--l{ transform:translateX(-100%) }
+.boot.done .boot__curtain--r{ transform:translateX(100%) }
+.boot.done{ background:transparent }
+
+/* ============================================================
+   5. PROGRESS + NAV
+   ============================================================ */
+.progress{ position:fixed; top:0; left:0; right:0; height:2px; z-index:120; background:rgba(255,255,255,.06) }
+.progress i{
+  display:block; height:100%; width:0;
+  background:linear-gradient(90deg,var(--m-light),var(--m-blue) 50%,var(--m-red));
+}
+
+.nav{
+  position:fixed; top:0; left:0; right:0; z-index:110;
+  display:flex; align-items:center; gap:24px;
+  padding:16px var(--pad);
+  transition:background .4s var(--ease),border-color .4s,padding .4s var(--ease);
+  border-bottom:1px solid transparent;
+}
+.nav.stuck{
+  background:rgba(8,9,11,.82);
+  backdrop-filter:blur(14px) saturate(140%);
+  -webkit-backdrop-filter:blur(14px) saturate(140%);
+  border-bottom-color:var(--line);
+  padding-block:11px;
+}
+.nav__brand{ display:flex; align-items:center; gap:11px; margin-right:auto }
+.nav__logo{ width:36px; height:36px; display:block }
+.nav__logo svg{ display:block }
+.nav__brand:hover .rd-q{ fill:var(--accent) }
+.nav__name{ font-size:15px; font-weight:800; letter-spacing:.04em }
+.nav__name b{
+  background:linear-gradient(160deg,var(--m-light),var(--m-blue) 50%,var(--m-red));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+.nav__links{ display:flex; gap:4px }
+.nav__links a{
+  font-family:var(--mono); font-size:14px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+  padding:8px 13px; border-radius:var(--r); position:relative; transition:color .3s;
+}
+.nav__links a::after{
+  content:""; position:absolute; left:13px; right:13px; bottom:2px; height:2px;
+  background:var(--accent); transform:scaleX(0); transform-origin:left;
+  transition:transform .4s var(--ease-out);
+}
+.nav__links a:hover{ color:var(--text) }
+.nav__links a.active{ color:#fff }
+.nav__links a.active::after,.nav__links a:hover::after{ transform:scaleX(1) }
+
+.nav__burger{ display:none; background:none; border:0; cursor:pointer; padding:8px; flex-direction:column; gap:5px }
+.nav__burger i{ display:block; width:22px; height:2px; background:var(--text); transition:transform .3s,opacity .3s }
+body.nav-open .nav__burger i:nth-child(1){ transform:translateY(7px) rotate(45deg) }
+body.nav-open .nav__burger i:nth-child(2){ opacity:0 }
+body.nav-open .nav__burger i:nth-child(3){ transform:translateY(-7px) rotate(-45deg) }
+
+/* ============================================================
+   6. HERO
+   ============================================================ */
+.hero{
+  position:relative; min-height:100svh; isolation:isolate;
+  display:flex; align-items:center;
+  padding:120px 0 90px; overflow:hidden;
+}
+.hero__stars{ position:absolute; inset:0; width:100%; height:100%; z-index:0; contain:strict }
+.hero__glow{
+  position:absolute; z-index:0; left:50%; top:42%; width:min(1100px,120vw); aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(0,102,177,.20),rgba(6,83,182,.07) 42%,transparent 66%);
+  pointer-events:none;
+}
+body.m-mode .hero__glow{ background:radial-gradient(circle,rgba(231,34,46,.18),rgba(6,83,182,.08) 42%,transparent 66%) }
+
+/* kidney grille motif */
+.hero__grille{
+  position:absolute; z-index:0; left:50%; bottom:-12%; transform:translateX(-50%);
+  display:flex; gap:14px; opacity:.5; pointer-events:none;
+}
+.hero__grille span{
+  width:min(20vw,190px); height:min(34vw,300px);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:40% 40% 46% 46%/58% 58% 34% 34%;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.055) 0 2px,transparent 2px 13px);
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.85),transparent 82%);
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.85),transparent 82%);
+}
+.hero__grille span:last-child{ transform:scaleX(-1) }
+
+.hero__inner{ position:relative; z-index:2 }
+
+/* name */
+.hero__name{
+  display:flex; align-items:flex-start; gap:.02em;
+  font-size:clamp(66px,17.5vw,232px);
+  font-weight:900; letter-spacing:-.055em; line-height:.86;
+  margin:0 0 8px; cursor:pointer; user-select:none;
+  transition:transform .4s var(--ease);
+}
+.hero__word{
+  background:linear-gradient(180deg,#fff 30%,#9AA3AD);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hero__a{ display:block; width:.72em; margin-left:.045em; position:relative; top:.008em }
+.hero__a-svg{ display:block; width:100%; height:auto; overflow:visible }
+.hero__a-stripes{ transform:skewX(-20.4deg); transform-origin:60px 70px }
+.stripe.s2{ fill:var(--m-light) }
+.stripe.s3{ fill:var(--m-blue) }
+.stripe.s4{ fill:var(--m-red) }
+
+/* trailing edge: edge light + the air it cuts */
+.hero__a-edge{
+  fill:none; stroke:url(#aEdge); stroke-width:2.2; stroke-linecap:round;
+}
+
+.hero__a-frags{ animation:aDrift 6.5s var(--ease) infinite alternate }
+@keyframes aDrift{
+  from{ transform:translateX(0); opacity:.85 }
+  to{ transform:translateX(10px); opacity:1 }
+}
+.hero__a-halo{ opacity:.9; animation:aHalo 6.5s var(--ease) infinite alternate }
+@keyframes aHalo{ from{ opacity:.55 } to{ opacity:1 } }
+.hero-paused .hero__a-frags,
+.hero-paused .hero__a-halo{ animation-play-state:paused }
+body.m-mode .hero__a-halo{ opacity:1 }
+.hero__a-shine{
+  fill:url(#aShineGrad); transform:skewX(-20.4deg);
+  animation:aShine 5.5s var(--ease) 1.4s infinite;
+  will-change:transform;
+}
+.hero-paused .hero__a-shine{ animation-play-state:paused }
+@keyframes aShine{ 0%{ transform:skewX(-20.4deg) translateX(0) } 26%,100%{ transform:skewX(-20.4deg) translateX(300px) } }
+.hero__name:hover{ transform:translateY(-3px) }
+.hero__name.shatter{ animation:nameKick .5s var(--ease) }
+@keyframes nameKick{ 30%{ transform:translateX(-8px) skewX(1.4deg) } 60%{ transform:translateX(5px) } }
+
+.hero__tagline{
+  font-family:var(--mono); font-size:clamp(19px,2.6vw,30px); font-weight:600;
+  letter-spacing:.06em; margin:0 0 22px; color:#fff;
+}
+.hero__tagline::after{
+  content:""; display:block; width:64px; height:3px; margin-top:16px;
+  background:linear-gradient(90deg,var(--m-light) 0 33.3%,var(--m-blue) 33.3% 66.6%,var(--m-red) 66.6%);
+}
+.hero__lede{ max-width:56ch; color:var(--muted); font-size:clamp(15px,1.5vw,18px) }
+.hero__cta{ display:flex; flex-wrap:wrap; gap:12px; margin:32px 0 0 }
+
+/* spec sheet */
+.spec{
+  display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+  margin:56px 0 0; background:var(--line);
+  border:1px solid var(--line); border-radius:var(--r); overflow:hidden;
+}
+.spec__i{ background:rgba(10,12,15,.82); padding:18px 20px }
+.spec dt{
+  font-family:var(--mono); font-size:12px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted-2); margin-bottom:7px;
+}
+.spec dd{ margin:0; font-size:18px; font-weight:700; letter-spacing:-.02em }
+.spec dd span{
+  display:block; font-family:var(--mono); font-size:13px; font-weight:500;
+  letter-spacing:.08em; color:var(--muted); margin-top:3px;
+}
+
+.scrolldown{
+  position:absolute; left:50%; bottom:26px; transform:translateX(-50%); z-index:2;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.3em; color:var(--muted-2);
+}
+.scrolldown i{ width:1px; height:44px; background:linear-gradient(180deg,var(--muted-2),transparent); position:relative; overflow:hidden }
+.scrolldown i::after{
+  content:""; position:absolute; inset:0; background:var(--accent);
+  animation:scrollDot 2.1s var(--ease) infinite;
+}
+@keyframes scrollDot{ 0%{ transform:translateY(-100%) } 60%,100%{ transform:translateY(100%) } }
+
+/* ============================================================
+   7. PROFILE
+   ============================================================ */
+.profile{ display:grid; grid-template-columns:1.35fr 1fr; gap:clamp(30px,5vw,72px); align-items:start }
+.profile__text .lead{ font-size:clamp(19px,2.1vw,25px); font-weight:600; letter-spacing:-.02em; color:#fff; line-height:1.4 }
+.profile__text p{ color:var(--muted) }
+
+.datacard{
+  position:relative; background:var(--panel); border:1px solid var(--line);
+  border-radius:var(--r); overflow:hidden;
+}
+.datacard::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--m-light) 0 33.3%,var(--m-blue) 33.3% 66.6%,var(--m-red) 66.6%);
+}
+.datacard__top{ display:flex; justify-content:space-between; align-items:center; gap:10px; padding:20px 22px 14px }
+.datacard__badge{
+  font-family:var(--mono); font-size:12px; letter-spacing:.22em; text-transform:uppercase; color:#fff;
+}
+.datacard__vin{ font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--muted-2) }
+.datacard__table{ width:100%; border-collapse:collapse; font-size:14px; position:relative; z-index:1 }
+.datacard__table th,.datacard__table td{ text-align:left; padding:13px 22px; border-top:1px solid var(--line); vertical-align:top }
+.datacard__table th{
+  font-family:var(--mono); font-weight:500; font-size:13px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--muted-2); width:38%;
+}
+.datacard__table td{ color:var(--text); font-weight:500 }
+.datacard__table td.hl{ color:var(--m-light); font-weight:700; letter-spacing:.02em }
+.dot{
+  display:inline-block; width:7px; height:7px; border-radius:50%; background:#3FCF6E;
+  margin-right:8px; box-shadow:0 0 0 0 rgba(63,207,110,.6); animation:pulse 2.4s infinite;
+}
+@keyframes pulse{ 70%{ box-shadow:0 0 0 8px rgba(63,207,110,0) } 100%{ box-shadow:0 0 0 0 rgba(63,207,110,0) } }
+.datacard__grille{
+  height:70px; margin:0; opacity:.5;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 2px,transparent 2px 12px);
+  border-top:1px solid var(--line);
+}
+
+/* ============================================================
+   8. GAUGES
+   ============================================================ */
+.gauges{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line) }
+.gauge{
+  background:var(--ink); padding:28px 22px 24px; text-align:center;
+  position:relative; overflow:hidden; transition:background .4s;
+}
+.gauge:hover{ background:var(--panel) }
+.gauge__svg{ width:100%; max-width:172px; margin:0 auto; display:block; overflow:visible }
+.g-track{ fill:none; stroke:rgba(255,255,255,.09); stroke-width:6; stroke-linecap:round }
+.g-fill{
+  fill:none; stroke:var(--accent); stroke-width:6; stroke-linecap:round;
+  stroke-dasharray:var(--len); stroke-dashoffset:var(--len);
+  transition:stroke-dashoffset 1.8s var(--ease-out), stroke .4s;
+}
+.gauge.in .g-fill{ stroke-dashoffset:var(--off) }
+.g-red{ fill:none; stroke:var(--m-red); stroke-width:6; stroke-linecap:butt; opacity:.85 }
+.g-tick{ stroke:rgba(255,255,255,.22); stroke-width:1.5 }
+.g-needle{
+  transform:rotate(-125deg); transform-origin:60px 60px;
+  transition:transform 1.9s var(--ease-out);
+}
+.gauge.in .g-needle{ transform:rotate(var(--deg)) }
+.g-needle path{ stroke:#fff; stroke-width:2.5; stroke-linecap:round }
+.g-hub{ fill:#fff }
+.g-val{ font-family:var(--mono); font-size:19px; font-weight:700; fill:#fff; letter-spacing:.02em }
+.g-unit{ font-family:var(--mono); font-size:9px; fill:var(--muted-2); letter-spacing:.2em }
+.gauge__name{ font-size:15px; font-weight:700; letter-spacing:-.01em; margin:10px 0 4px }
+.gauge__meta{
+  font-family:var(--mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--muted-2); margin:0;
+}
+
+.stackbar{ margin-top:54px; padding-top:38px; border-top:1px solid var(--line) }
+.stackbar__label{
+  font-family:var(--mono); font-size:13px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--muted); margin:0;
+}
+
+/* ============================================================
+   9. GARAGE / PROJECTS
+   ============================================================ */
+.garage{ display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(16px,2.2vw,28px) }
+.car{
+  position:relative; background:var(--panel); border:1px solid var(--line);
+  border-radius:var(--r); overflow:hidden; display:flex; flex-direction:column;
+  transition:transform .5s var(--ease-out),border-color .4s,background .4s;
+}
+.car::after{
+  content:""; position:absolute; left:0; right:0; top:0; height:2px; z-index:2;
+  background:linear-gradient(90deg,var(--m-light) 0 33.3%,var(--m-blue) 33.3% 66.6%,var(--m-red) 66.6%);
+  transform:scaleX(0); transform-origin:left; transition:transform .6s var(--ease-out);
+}
+.car:hover{ transform:translateY(-6px); border-color:var(--line-2); background:var(--panel-2) }
+.car:hover::after{ transform:scaleX(1) }
+
+.car__media{
+  position:relative; aspect-ratio:2/1; background:#0B0E12;
+  border-bottom:1px solid var(--line); overflow:hidden;
+}
+.car__idx{
+  position:absolute; top:14px; left:18px; z-index:2;
+  font-family:var(--mono); font-size:12px; letter-spacing:.24em; color:var(--muted-2);
+}
+.car__art{ width:100%; height:100%; display:block }
+.car__grid path{ stroke:rgba(255,255,255,.055); stroke-width:1; fill:none }
+.car__line{
+  fill:none; stroke:var(--accent); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round;
+  stroke-dasharray:1400; stroke-dashoffset:1400; transition:stroke-dashoffset 2s var(--ease-out),stroke .4s;
+}
+.car.in .car__line{ stroke-dashoffset:0 }
+.car__pt{ fill:none; stroke:#fff; stroke-width:2; opacity:0; transition:opacity .6s .9s }
+.car.in .car__pt{ opacity:.9 }
+.car__box,.car__bars rect{ fill:rgba(255,255,255,.07); stroke:rgba(255,255,255,.2); stroke-width:1 }
+.car__bars rect{ transform-origin:center bottom; transform:scaleY(0); transition:transform .9s var(--ease-out) }
+.car.in .car__bars rect{ transform:scaleY(1) }
+.car.in .car__bars rect:nth-child(2){ transition-delay:.08s }
+.car.in .car__bars rect:nth-child(3){ transition-delay:.16s }
+.car.in .car__bars rect:nth-child(4){ transition-delay:.24s }
+.car.in .car__bars rect:nth-child(5){ transition-delay:.32s }
+.car.in .car__bars rect:nth-child(6){ transition-delay:.4s }
+.car:hover .car__box{ fill:var(--accent-soft); stroke:var(--accent) }
+.car__box{ transition:fill .4s,stroke .4s }
+
+.car__body{ padding:26px clamp(20px,2.4vw,30px) 30px; flex:1; display:flex; flex-direction:column }
+.car__body h3{ font-size:clamp(23px,2.6vw,30px) }
+.car__type{
+  font-family:var(--mono); font-size:13px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--accent); margin:9px 0 14px; transition:color .4s;
+}
+.car__body > p{ color:var(--muted); font-size:15px; margin-bottom:18px }
+.chips{ display:flex; flex-wrap:wrap; gap:7px; margin-bottom:20px }
+.chips li{
+  font-family:var(--mono); font-size:12px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--muted); background:rgba(255,255,255,.045); border-radius:var(--r); padding:5px 10px;
+}
+.car__stats{ display:flex; gap:28px; margin-top:auto; padding-top:20px; border-top:1px solid var(--line) }
+.car__stats b{ display:block; font-size:21px; font-weight:800; letter-spacing:-.02em }
+.car__stats span{
+  font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2);
+}
+
+/* ============================================================
+   10. ROUTE / TIMELINE
+   ============================================================ */
+.route{ position:relative; max-width:860px; padding-left:0 }
+.route::before{
+  content:""; position:absolute; left:104px; top:12px; bottom:12px; width:1px;
+  background:linear-gradient(180deg,var(--m-light),var(--m-blue) 50%,var(--m-red));
+  opacity:.55;
+}
+.route__i{ display:grid; grid-template-columns:104px 1fr; gap:0; padding-bottom:34px }
+.route__i:last-child{ padding-bottom:0 }
+.route__yr{
+  font-family:var(--mono); font-size:18px; font-weight:700; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--muted); padding-top:21px;
+}
+.route__c{
+  position:relative; margin-left:34px; background:var(--panel);
+  border:1px solid var(--line); border-radius:var(--r); padding:22px 26px;
+  transition:border-color .4s,transform .5s var(--ease-out);
+}
+.route__c::before{
+  content:""; position:absolute; left:-34px; top:28px; width:9px; height:9px;
+  border-radius:50%; background:var(--ink); border:2px solid var(--accent);
+  transform:translateX(-4px); transition:border-color .4s,box-shadow .4s;
+}
+.route__i:hover .route__c{ border-color:var(--line-2); transform:translateX(4px) }
+.route__i:hover .route__c::before{ box-shadow:0 0 0 5px var(--accent-soft) }
+.route__c h3{ font-size:20px; display:flex; align-items:center; gap:12px; flex-wrap:wrap }
+.route__c p{ color:var(--muted); font-size:15px; margin:10px 0 0 }
+.route__tag{
+  font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.16em; text-transform:uppercase;
+  color:#fff; background:var(--m-blue); padding:4px 9px; border-radius:var(--r); letter-spacing:.14em;
+}
+
+/* ============================================================
+   11. WHY BMW
+   ============================================================ */
+.bmw{ position:relative; overflow:hidden }
+.bmw__stripes{ position:absolute; inset:0; display:flex; opacity:.05; pointer-events:none }
+.bmw__stripes i{ flex:1; transform:skewX(-14deg) }
+.bmw__stripes i:nth-child(1){ background:var(--m-light) }
+.bmw__stripes i:nth-child(2){ background:var(--m-blue) }
+.bmw__stripes i:nth-child(3){ background:var(--m-red) }
+
+.pillars{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); position:relative }
+.pillar{ background:var(--ink); padding:clamp(26px,3vw,38px); transition:background .4s }
+.pillar:hover{ background:var(--panel) }
+.pillar__n{
+  font-family:var(--mono); font-size:13px; letter-spacing:.24em; color:var(--muted-2);
+  display:block; margin-bottom:20px;
+}
+.pillar h3{ font-size:22px; margin-bottom:14px }
+.pillar p{ color:var(--muted); font-size:15px; margin:0 }
+
+.quote{ margin:clamp(44px,6vw,72px) auto 0; max-width:820px; text-align:center; position:relative }
+.quote p{
+  font-size:clamp(21px,3vw,34px); font-weight:700; letter-spacing:-.03em; line-height:1.28;
+  color:#fff; margin:0;
+}
+.quote p::before{ content:"\201C" }
+.quote p::after{ content:"\201D" }
+.quote cite{
+  display:block; margin-top:22px; font-family:var(--mono); font-size:13px;
+  letter-spacing:.24em; text-transform:uppercase; color:var(--muted); font-style:normal;
+}
+
+/* ============================================================
+   12. CONTACT + FOOTER
+   ============================================================ */
+.contact__box{
+  display:grid; grid-template-columns:1.1fr .9fr; gap:clamp(30px,5vw,64px);
+  background:var(--panel); border:1px solid var(--line); border-radius:var(--r);
+  padding:clamp(30px,4.4vw,60px); position:relative; overflow:hidden;
+}
+.contact__box::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--m-light) 0 33.3%,var(--m-blue) 33.3% 66.6%,var(--m-red) 66.6%);
+}
+.contact__title{ font-size:clamp(30px,4.4vw,50px) }
+.contact__sub{ color:var(--muted); margin:20px 0 0; max-width:42ch }
+.link-row{
+  display:flex; align-items:center; gap:16px; padding:16px 4px;
+  border-top:1px solid var(--line); transition:padding .35s var(--ease),color .3s;
+}
+.link-row:first-child{ border-top:0 }
+.link-row__k{
+  font-family:var(--mono); font-size:12px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--muted-2); width:82px; flex:0 0 auto;
+}
+.link-row__v{ font-weight:600; font-size:15px; margin-right:auto; word-break:break-all }
+.link-row .ico{ color:var(--muted-2); transition:transform .35s var(--ease),color .3s }
+.link-row:hover{ padding-left:12px }
+.link-row:hover .ico{ transform:translateX(4px); color:var(--accent) }
+
+.foot{ border-top:1px solid var(--line); background:var(--ink-2); padding:44px 0 40px }
+.foot__in{ display:grid; gap:12px; text-align:center }
+.foot__name{ font-size:20px; font-weight:800; letter-spacing:.06em; margin:0 }
+.foot__name b{
+  background:linear-gradient(160deg,var(--m-light),var(--m-blue) 50%,var(--m-red));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.foot__note{
+  font-family:var(--mono); font-size:13px; letter-spacing:.12em; color:var(--muted); margin:0;
+}
+.foot__hint{ color:var(--muted-2); margin-left:10px }
+.foot__legal{ font-size:11.5px; line-height:1.6; color:var(--muted-2); margin:8px auto 0; max-width:60ch; letter-spacing:.01em }
+
+
+/* language levels */
+.langs{ padding:18px 22px 20px; border-top:1px solid var(--line) }
+.langs__label{
+  font-family:var(--mono); font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--muted-2); margin:0 0 12px;
+}
+.langs ul{ display:grid; gap:9px }
+.langs li{ display:flex; align-items:center; gap:14px; font-size:14px; font-weight:500 }
+.langs li span{ margin-right:auto }
+.lvl{ display:flex; gap:5px; flex:0 0 auto }
+.lvl b{
+  width:7px; height:7px; border-radius:50%;
+  background:rgba(255,255,255,.13); transition:background .3s;
+}
+.lvl b.on{ background:var(--accent) }
+
+/* footer slogan */
+.foot__slogan{
+  font-family:var(--mono); font-size:15px; font-weight:600;
+  letter-spacing:.34em; text-transform:uppercase; color:var(--text); margin:0;
+}
+.foot__slogan b{ color:var(--m-red); font-weight:600 }
+
+/* static (non-link) contact row */
+.link-row--static{ color:var(--muted) }
+.link-row--static:hover{ padding-left:4px }
+
+/* ============================================================
+   13. HUD SPEEDOMETER + M TOAST
+   ============================================================ */
+.hud{
+  position:fixed; right:22px; bottom:22px; z-index:100;
+  width:76px; height:76px; padding:0; cursor:pointer; color:var(--text);
+  background:rgba(10,12,15,.82); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--line); border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none; transform:scale(.85) translateY(10px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease-out),border-color .3s;
+}
+.hud.show{ opacity:1; pointer-events:auto; transform:none }
+.hud:hover{ border-color:var(--line-2) }
+.hud svg{ position:absolute; inset:5px; width:calc(100% - 10px); height:calc(100% - 10px); transform:rotate(-90deg) }
+.hud__ring-bg{ fill:none; stroke:rgba(255,255,255,.10); stroke-width:4 }
+.hud__ring{
+  fill:none; stroke:var(--accent); stroke-width:4; stroke-linecap:round;
+  stroke-dasharray:276.5; stroke-dashoffset:276.5; transition:stroke-dashoffset .2s linear,stroke .6s;
+}
+.hud__val{ transition:color .6s; position:relative; font-family:var(--mono); font-size:19px; font-weight:700; line-height:1; letter-spacing:.02em }
+.hud.good{ border-color:rgba(63,207,110,.55) }
+.hud.bad{ border-color:rgba(231,34,46,.55) }
+.hud.good .hud__ring{ stroke:#3FCF6E }
+.hud.bad .hud__ring{ stroke:var(--m-red) }
+.hud.good .hud__val{ color:#3FCF6E }
+.hud.bad .hud__val{ color:var(--m-red) }
+
+/* 0-100 launch timer */
+.launch{
+  position:fixed; right:22px; bottom:110px; z-index:100;
+  min-width:128px; padding:10px 14px 11px; text-align:right;
+  background:rgba(10,12,15,.88); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--line-2); border-radius:var(--r);
+  opacity:0; transform:translateY(8px); pointer-events:none;
+  transition:opacity .35s var(--ease),transform .45s var(--ease-out),border-color .3s;
+}
+.launch.show{ opacity:1; transform:none }
+.launch::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--m-light),var(--m-blue) 50%,var(--m-red));
+}
+.launch__k{ display:block; font-family:var(--mono); font-size:11px; font-weight:600; letter-spacing:.2em; color:var(--muted) }
+.launch__t{ display:block; font-family:var(--mono); font-size:30px; font-weight:700; line-height:1.05; letter-spacing:.02em; color:#fff; font-variant-numeric:tabular-nums }
+.launch__m{ display:block; font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--muted-2); min-height:1.3em }
+.launch.good{ border-color:rgba(63,207,110,.6) }
+.launch.good .launch__t,.launch.good .launch__m{ color:#3FCF6E }
+.launch.bad{ border-color:rgba(231,34,46,.6) }
+.launch.bad .launch__t,.launch.bad .launch__m{ color:var(--m-red) }
+.launch.pop{ animation:launchPop .5s var(--ease-out) }
+@keyframes launchPop{ 40%{ transform:scale(1.08) } }
+
+.hud__unit{ position:relative; font-family:var(--mono); font-size:9px; letter-spacing:.18em; color:var(--muted); margin-top:3px }
+
+.mtoast{
+  position:fixed; left:50%; bottom:34px; transform:translate(-50%,20px); z-index:130;
+  font-family:var(--mono); font-size:13px; font-weight:600; letter-spacing:.3em;
+  padding:12px 26px; border-radius:var(--r); color:#fff;
+  background:rgba(10,12,15,.9); backdrop-filter:blur(10px);
+  border:1px solid var(--line-2); opacity:0; pointer-events:none;
+  transition:opacity .4s,transform .5s var(--ease-out);
+}
+.mtoast::before{
+  content:""; position:absolute; left:0; top:0; bottom:0; width:3px;
+  background:linear-gradient(180deg,var(--m-light),var(--m-blue) 50%,var(--m-red));
+}
+.mtoast.show{ opacity:1; transform:translate(-50%,0) }
+
+/* ============================================================
+   14. RESPONSIVE
+   ============================================================ */
+@media (max-width:1040px){
+  .profile{ grid-template-columns:1fr }
+  .pillars{ grid-template-columns:1fr }
+  .contact__box{ grid-template-columns:1fr }
+  .spec{ grid-template-columns:repeat(2,1fr) }
+}
+@media (max-width:900px){
+  .nav__links{
+    position:fixed; inset:0; z-index:-1;
+    flex-direction:column; justify-content:center; align-items:center; gap:6px;
+    background:rgba(8,9,11,.97); backdrop-filter:blur(16px);
+    opacity:0; pointer-events:none; transition:opacity .4s var(--ease);
+  }
+  .nav__links a{ font-size:22px; padding:14px }
+  .nav__links a::after{ display:none }
+  body.nav-open .nav__links{ opacity:1; pointer-events:auto; z-index:1 }
+  .nav__burger{ display:flex; position:relative; z-index:2 }
+  .nav__brand{ position:relative; z-index:2 }
+  /* backdrop-filter on the stuck bar traps the fixed overlay inside the bar; drop it while open */
+  body.nav-open .nav,body.nav-open .nav.stuck{ backdrop-filter:none; -webkit-backdrop-filter:none; background:transparent; border-bottom-color:transparent }
+  .nav__cta{ display:none }
+  .garage{ grid-template-columns:1fr }
+  .gauges{ grid-template-columns:repeat(2,1fr) }
+  .hud{ width:66px; height:66px; right:14px; bottom:14px }
+  .hud__val{ font-size:17px }
+  .launch{ right:14px; bottom:92px }
+}
+@media (max-width:620px){
+  .hero{ padding-top:104px }
+  .hero__name{ letter-spacing:-.045em }
+  .spec{ grid-template-columns:1fr }
+  .route::before{ left:5px }
+  .route__i{ grid-template-columns:1fr; gap:6px; padding-left:30px; position:relative }
+  .route__yr{ padding-top:0 }
+  .route__c{ margin-left:0 }
+  .route__c::before{ left:-30px; top:22px }
+  .gauges{ grid-template-columns:1fr }
+  .car__stats{ gap:18px; flex-wrap:wrap }
+  .foot__hint{ display:block; margin:6px 0 0 }
+}
+
+/* ---------- 15. MOTION PREFERENCES ---------- */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important }
+  html{ scroll-behavior:auto }
+  .reveal{ opacity:1; transform:none }
+}
+
+
+html,body{background:var(--ink) !important;color:var(--text)}
+
+	</style>
 </head>
-
 <body>
-	<header>
-		<nav aria-label="Main menu">
-			<a class="logo" href="#top">Yavuz <b>A</b></a>
-			<a href="#profile">Profile</a>
-			<a href="#performance">Performance</a>
-			<a href="#route">Route</a>
-			<a href="#why-bmw">Why BMW</a>
-			<a href="#contact">Contact</a>
-		</nav>
-	</header>
+<script is:inline>document.body.className = 'is-booting';</script>
 
-	<main id="top">
-		<section class="intro">
-			<p class="label">Software Engineer Student / Graduation Intern Candidate</p>
-			<h1>Yavuz <span>Atilgan</span></h1>
-			<p class="ondertitel">Sheer Programming Pleasure.</p>
-			<p>
-				Software engineering student at Hogeschool Rotterdam, in year 2 of the Associate degree
-				Software Development. I build across the full stack, from React on the front to PHP,
-				Node.js and Java behind it. Available for a graduation internship from February 2027.
-			</p>
-			<p class="knoppen">
-				<a class="knop" href="#profile">Start the engine</a>
-				<a class="knop knop-rustig" href="#contact">Book a test drive</a>
-			</p>
-			<img class="intro-plaatje" src="/afbeeldingen/dashboard.svg" alt="" width="300" height="210" />
+<!-- ================= BOOT / LOADING SCREEN ================= -->
+<div id="boot" class="boot" role="status" aria-label="Loading">
+  <div class="boot__stripes" aria-hidden="true"><i></i><i></i><i></i></div>
 
-			<dl class="feiten">
-				<div>
-					<dt>Engine</dt>
-					<dd>Full stack <small>JS · TS · PHP · Java</small></dd>
-				</div>
-				<div>
-					<dt>Drivetrain</dt>
-					<dd>xDrive <small>front + back end + AI</small></dd>
-				</div>
-				<div>
-					<dt>Programme</dt>
-					<dd>Ad SD <small>Hogeschool Rotterdam, year 2</small></dd>
-				</div>
-				<div>
-					<dt>Target</dt>
-					<dd>BMW Group <small>internship Feb to Jul 2027</small></dd>
-				</div>
-			</dl>
-		</section>
+  <div class="boot__center">
+    <svg class="boot__mark" viewBox="-14 -14 128 128" aria-hidden="true">
+      <defs>
+        <linearGradient id="bootSweep" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#009ADA"/>
+          <stop offset="50%" stop-color="#0653B6"/>
+          <stop offset="100%" stop-color="#E7222E"/>
+        </linearGradient>
+      </defs>
 
-		<section id="profile" class="profiel">
-			<p class="label">01 / Driver profile</p>
-			<h2>The engineer behind the wheel</h2>
+      <circle class="boot__ring-bg" cx="50" cy="50" r="57"/>
+      <circle class="boot__ring" cx="50" cy="50" r="57" stroke="url(#bootSweep)"/>
 
-			<article>
-					<p class="groot">
-						Motivated software engineering student with a strong interest in front-end,
-						back-end, full stack development and AI.
-					</p>
-					<p>
-						I care about the things nobody sees in a demo: error handling, tests, and code the
-						next engineer can read without a manual.
-					</p>
-					<p>
-						I work across the whole stack. HTML, SCSS, TypeScript and React on the front, PHP,
-						Node.js, Java and Python behind it, SQL underneath, and Kotlin or Swift when it has
-						to run in someone's hand. I am in year 2 of the Associate degree Software Development
-						at Hogeschool Rotterdam, with every year 1 credit completed.
-					</p>
-					<p>
-						The other half of me is a car person. Getting to write software for the company
-						that builds the machines I have read about for years is not just an application. It
-						is the obvious destination. So I did not wait for a vacancy: I contacted a manager of
-						the BMW software department myself.
-					</p>
-					<p>
-						This website shows how I work. I built it with Astro and semantic HTML, and a GitHub
-						Action puts every push to <code>main</code> online automatically.
-					</p>
-					<ul class="woorden">
-						<li>Analytical</li>
-						<li>Eager to learn</li>
-						<li>Ambitious</li>
-						<li>Problem-solving</li>
-						<li>Team player</li>
-					</ul>
-				</article>
+      <g class="roundel">
+        <circle class="rd-rim" cx="50" cy="50" r="50"/>
+        <circle class="rd-ring" cx="50" cy="50" r="48.4"/>
+        <circle class="rd-inner" cx="50" cy="50" r="29.5"/>
+        <path class="rd-q" d="M50 50 L50 20.5 A29.5 29.5 0 0 0 20.5 50 Z"/>
+        <path class="rd-q" d="M50 50 L50 79.5 A29.5 29.5 0 0 0 79.5 50 Z"/>
+        <g class="rd-txt">
+          <g transform="rotate(-45 50 50)"><text x="50" y="17.42" text-anchor="middle">Y</text></g>
+          <text x="50" y="17.42" text-anchor="middle">S</text>
+          <g transform="rotate(45 50 50)"><text x="50" y="17.42" text-anchor="middle">A</text></g>
+        </g>
+      </g>
+    </svg>
 
-				<aside class="datakaart">
-					<h3>Technical data</h3>
-					<table>
-						<tbody>
-							<tr>
-								<th>Model</th>
-								<td>Yavuz Atilgan</td>
-							</tr>
-							<tr>
-								<th>Series</th>
-								<td>Ad Software Development, year 2</td>
-							</tr>
-							<tr>
-								<th>Status</th>
-								<td>Available Feb to Jul 2027</td>
-							</tr>
-							<tr>
-								<th>Front</th>
-								<td>HTML · SCSS · TypeScript · React</td>
-							</tr>
-							<tr>
-								<th>Back</th>
-								<td>PHP · Node.js · Java · Python</td>
-							</tr>
-							<tr>
-								<th>Mobile</th>
-								<td>Kotlin · Swift</td>
-							</tr>
-							<tr>
-								<th>Target</th>
-								<td class="blauw">BMW Group</td>
-							</tr>
-						</tbody>
-					</table>
+    <div class="boot__meta">
+      <div class="boot__title">PORTFOLIO OS <span>v2.026</span></div>
+      <div class="boot__log" id="bootLog" aria-hidden="true"></div>
+    </div>
 
-					<h3>Languages</h3>
-					<table>
-						<tbody>
-							<tr>
-								<th>Dutch</th>
-								<td>Fluent</td>
-							</tr>
-							<tr>
-								<th>English</th>
-								<td>Fluent</td>
-							</tr>
-							<tr>
-								<th>Turkish</th>
-								<td>Fluent</td>
-							</tr>
-							<tr>
-								<th>Italian</th>
-								<td>Basic</td>
-							</tr>
-						</tbody>
-					</table>
-				</aside>
-		</section>
+    <div class="boot__bar">
+      <div class="boot__bar-track"><div class="boot__bar-fill" id="bootFill"></div></div>
+      <div class="boot__bar-num"><span id="bootPct">0</span><em>%</em></div>
+    </div>
+  </div>
 
-		<section id="performance">
-			<p class="label">02 / Performance</p>
-			<h2>Power output</h2>
-			<p>My own rating per discipline, on a scale up to 10.000 rpm. Redline at 8.000 rpm.</p>
+  <button class="boot__skip" id="bootSkip" type="button">Skip intro <kbd>Esc</kbd></button>
+  <div class="boot__curtain boot__curtain--l" aria-hidden="true"></div>
+  <div class="boot__curtain boot__curtain--r" aria-hidden="true"></div>
+</div>
 
-			<ul class="meters">
-				<li>
-					<h3>JavaScript / TypeScript <small>Daily driver</small></h3>
-					<span class="meter" aria-hidden="true"><span style="width: 80%"></span></span>
-					<p class="rpm">8.0 <small>rpm × 1000</small></p>
-				</li>
-				<li>
-					<h3>React / SCSS <small>Front-end</small></h3>
-					<span class="meter" aria-hidden="true"><span style="width: 85%"></span></span>
-					<p class="rpm">8.5 <small>rpm × 1000</small></p>
-				</li>
-				<li>
-					<h3>PHP / Node.js <small>Back-end</small></h3>
-					<span class="meter" aria-hidden="true"><span style="width: 75%"></span></span>
-					<p class="rpm">7.5 <small>rpm × 1000</small></p>
-				</li>
-				<li>
-					<h3>Java / Python <small>OOP &amp; AI</small></h3>
-					<span class="meter" aria-hidden="true"><span style="width: 80%"></span></span>
-					<p class="rpm">8.0 <small>rpm × 1000</small></p>
-				</li>
-				<li>
-					<h3>SQL / PhpMyAdmin <small>Data</small></h3>
-					<span class="meter" aria-hidden="true"><span style="width: 75%"></span></span>
-					<p class="rpm">7.5 <small>rpm × 1000</small></p>
-				</li>
-				<li>
-					<h3>Kotlin / Swift <small>Android &amp; iOS</small></h3>
-					<span class="meter" aria-hidden="true"><span style="width: 70%"></span></span>
-					<p class="rpm">7.0 <small>rpm × 1000</small></p>
-				</li>
-			</ul>
+<!-- ================= SCROLL PROGRESS ================= -->
+<div class="progress" aria-hidden="true"><i id="progressFill"></i></div>
 
-			<h3>Full toolbox</h3>
-			<ul class="woorden">
-				<li>HTML</li>
-				<li>CSS</li>
-				<li>SCSS</li>
-				<li>JavaScript</li>
-				<li>TypeScript</li>
-				<li>React</li>
-				<li>Node.js</li>
-				<li>PHP</li>
-				<li>Java</li>
-				<li>Python</li>
-				<li>SQL</li>
-				<li>PhpMyAdmin</li>
-				<li>Kotlin</li>
-				<li>Swift</li>
-				<li>Git</li>
-				<li>GitHub</li>
-				<li>Azure DevOps</li>
-				<li>Linux</li>
-				<li>Android</li>
-				<li>iOS</li>
-				<li>AI</li>
-			</ul>
-		</section>
+<!-- ================= NAV ================= -->
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#hero" aria-label="Yavuz Atilgan, home">
+    <span class="nav__logo" aria-hidden="true">
+      <svg viewBox="0 0 100 100" class="roundel">
+        <circle class="rd-rim" cx="50" cy="50" r="50"/>
+        <circle class="rd-ring" cx="50" cy="50" r="48.4"/>
+        <circle class="rd-inner" cx="50" cy="50" r="29.5"/>
+        <path class="rd-q" d="M50 50 L50 20.5 A29.5 29.5 0 0 0 20.5 50 Z"/>
+        <path class="rd-q" d="M50 50 L50 79.5 A29.5 29.5 0 0 0 79.5 50 Z"/>
+        <g class="rd-txt">
+          <g transform="rotate(-45 50 50)"><text x="50" y="17.42" text-anchor="middle">Y</text></g>
+          <text x="50" y="17.42" text-anchor="middle">S</text>
+          <g transform="rotate(45 50 50)"><text x="50" y="17.42" text-anchor="middle">A</text></g>
+        </g>
+      </svg>
+    </span>
+    <span class="nav__name">YAVUZ <b>A</b></span>
+  </a>
+  <nav class="nav__links" id="navLinks">
+    <a href="#profile" data-nav>Profile</a>
+    <a href="#performance" data-nav>Performance</a>
+    <a href="#garage" data-nav>Garage</a>
+    <a href="#route" data-nav>Route</a>
+    <a href="#bmw" data-nav>Why BMW</a>
+  </nav>
+  <a class="btn btn--sm nav__cta" href="#contact">Contact <svg viewBox="0 0 24 24" class="ico"><path d="M4 12h14M13 6l6 6-6 6"/></svg></a>
+  <button class="nav__burger" id="navBurger" type="button" aria-label="Menu"><i></i><i></i><i></i></button>
+</header>
 
-		<section id="route">
-			<p class="label">03 / The route so far</p>
-			<h2>Navigation history</h2>
+<main>
 
-			<ol class="tijdlijn">
-				<li>
-					<p class="wanneer">Next · February to July 2027</p>
-					<h3>Graduation internship <small>Destination</small></h3>
-					<p>
-						The final stage of my degree. I write the assignment together with the company and
-						ship production software inside a real engineering culture, preferably one that
-						measures things in Nm and ms.
-					</p>
-				</li>
-				<li>
-					<p class="wanneer">Now</p>
-					<h3>Associate degree Software Development</h3>
-					<p>
-						Hogeschool Rotterdam, year 2. Every year 1 credit completed. This year includes
-						Security &amp; Cyberwarfare, Analysis &amp; Big Data and IT Architecture.
-					</p>
-				</li>
-				<li>
-					<p class="wanneer">HBO</p>
-					<h3>Informatica, 2 years</h3>
-					<p>
-						Hogeschool Rotterdam. Two years of computer science: algorithms, databases,
-						networking and the theory underneath everything I build now.
-					</p>
-				</li>
-				<li>
-					<p class="wanneer">MBO</p>
-					<h3>Software Developer</h3>
-					<p>
-						GLR Grafisch Lyceum Rotterdam. Where the foundation was laid: my first real
-						codebases, first clients and the moment I realised debugging is genuinely fun.
-					</p>
-				</li>
-			</ol>
-		</section>
+<!-- ================= HERO ================= -->
+<section class="hero" id="hero">
+  <canvas class="hero__stars" id="stars" aria-hidden="true"></canvas>
+  <div class="hero__grille" aria-hidden="true"><span></span><span></span></div>
+  <div class="hero__glow" aria-hidden="true"></div>
 
-		<section id="why-bmw">
-			<p class="label">04 / Destination</p>
-			<h2>Why BMW</h2>
-			<p class="groot">
-				Not because it is a famous logo. Because of how the cars are engineered.
-			</p>
+  <div class="wrap hero__inner">
+    <p class="eyebrow reveal">
+      <i class="eyebrow__tick" aria-hidden="true"></i>
+      Software Engineer Student <em>/</em> AI Specialist
+    </p>
 
-			<ul class="kaarten">
-				<li>
-					<p class="nummer">01</p>
-					<h3>Engineering without compromise</h3>
-					<p>
-						A near 50:50 weight distribution is not a marketing line, it is a decision that
-						costs money and effort. That is exactly the standard I want to hold my code to: do it
-						properly, even when nobody would notice the shortcut.
-					</p>
-				</li>
-				<li>
-					<p class="nummer">02</p>
-					<h3>Software is the new drivetrain</h3>
-					<p>
-						Modern BMWs run on millions of lines of code: driver assistance, electrification,
-						connected services, over-the-air updates. This is the most exciting time in history
-						to be a software engineer in automotive, and I want to be in that room.
-					</p>
-				</li>
-				<li>
-					<p class="nummer">03</p>
-					<h3>Sheer Driving Pleasure, in code</h3>
-					<p>
-						The best software feels like the best cars: responsive, predictable and quietly
-						confident. I obsess over that feeling (latency, motion, feedback) because it is the
-						difference between a tool people use and one they enjoy.
-					</p>
-				</li>
-			</ul>
+    <h1 class="hero__name reveal" id="heroName" title="Click to shatter">
+      <span class="hero__word">YAVUZ</span><span class="hero__a" aria-label="A">
+        <svg viewBox="0 0 120 140" class="hero__a-svg" aria-hidden="true">
+          <defs>
+            <!-- solid metal body, same white-to-steel ramp as YAVUZ -->
+            <linearGradient id="aSteel" x1="0.1" y1="0" x2="0.4" y2="1">
+              <stop offset="0%" stop-color="#FFFFFF"/>
+              <stop offset="38%" stop-color="#E6ECF2"/>
+              <stop offset="100%" stop-color="#939DA9"/>
+            </linearGradient>
+            <linearGradient id="aShineGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#fff" stop-opacity="0"/>
+              <stop offset="50%" stop-color="#fff" stop-opacity=".75"/>
+              <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="aTrailW" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".9"/>
+              <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="aTrailR" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#E7222E" stop-opacity=".95"/>
+              <stop offset="100%" stop-color="#E7222E" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="aTrailB" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#009ADA" stop-opacity=".9"/>
+              <stop offset="100%" stop-color="#009ADA" stop-opacity="0"/>
+            </linearGradient>
+            <linearGradient id="aEdge" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".1"/>
+              <stop offset="45%" stop-color="#FFFFFF" stop-opacity=".85"/>
+              <stop offset="100%" stop-color="#E7222E" stop-opacity="1"/>
+            </linearGradient>
+            <!-- heat haze off the trailing edge -->
+            <radialGradient id="aGlow" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%" stop-color="#E7222E" stop-opacity=".5"/>
+              <stop offset="55%" stop-color="#E7222E" stop-opacity=".12"/>
+              <stop offset="100%" stop-color="#E7222E" stop-opacity="0"/>
+            </radialGradient>
+            <clipPath id="aClip">
+              <path d="M52 0 H68 L120 140 H90 L60 40 L30 140 H0 Z"/>
+              <rect x="28" y="90" width="64" height="22" rx="2"/>
+            </clipPath>
+          </defs>
 
-			<blockquote class="uitgelicht">
-				<p>If they say it is impossible, it is impossible for them, not for me.</p>
-				<footer>Yavuz Atilgan</footer>
-			</blockquote>
-		</section>
+          <ellipse class="hero__a-halo" cx="146" cy="92" rx="84" ry="66" fill="url(#aGlow)"/>
 
-		<section id="contact">
-			<p class="label">05 / Contact</p>
-			<h2>Let us talk about the internship.</h2>
-			<p class="groot">
-				Available for a graduation internship from February to July 2027. CV, references and code samples on request.
-			</p>
-			<ul class="contact">
-				<li>
-					<span>E-mail</span>
-					<a href="mailto:yavuzatilgan7@gmail.com">yavuzatilgan7@gmail.com</a>
-				</li>
-				<li>
-					<span>GitHub</span>
-					<a href="https://github.com/Yavuz-1073705">github.com/Yavuz-1073705</a>
-				</li>
-			</ul>
-			<p>
-				<a class="knop" href="mailto:yavuzatilgan7@gmail.com?subject=Graduation%20internship">Send a message</a>
-			</p>
-		</section>
-	</main>
+          <g clip-path="url(#aClip)">
+            <!-- base covers the whole glyph, so no gap can ever show through -->
+            <rect x="-80" y="-40" width="300" height="240" fill="url(#aSteel)"/>
+            <g class="hero__a-stripes">
+              <rect class="stripe s2" x="25" y="-90" width="8.4" height="330"/>
+              <rect class="stripe s3" x="33.4" y="-90" width="8.4" height="330"/>
+              <rect class="stripe s4" x="41.8" y="-90" width="8.4" height="330"/>
+            </g>
+            <rect class="hero__a-shine" x="-70" y="-70" width="34" height="300"/>
+          </g>
 
-	<footer>
-		<p class="logo">Yavuz <b>A</b></p>
-		<p>Driven by code. Fueled by <b>BMW</b>.</p>
-		<p>Built with Astro, HTML and CSS.</p>
-		<p class="klein">
-			Independent personal portfolio. Not affiliated with, endorsed by or produced by BMW AG. All
-			trademarks belong to their respective owners.
-		</p>
-	</footer>
+          <!-- edge light along the trailing leg, then the air it cuts -->
+          <path class="hero__a-edge" d="M68 0 L120 140"/>
+
+          <g class="hero__a-frags">
+            <rect x="79" y="20" width="34" height="2.5" fill="url(#aTrailW)" opacity=".60"/>
+            <rect x="84" y="32.5" width="22" height="2" fill="url(#aTrailR)" opacity=".55"/>
+            <rect x="89" y="46" width="44" height="3" fill="url(#aTrailW)" opacity=".48"/>
+            <rect x="94" y="60.5" width="26" height="2" fill="url(#aTrailB)" opacity=".40"/>
+            <rect x="100" y="76" width="48" height="3" fill="url(#aTrailR)" opacity=".46"/>
+            <rect x="106" y="92.5" width="28" height="2" fill="url(#aTrailW)" opacity=".34"/>
+            <rect x="112" y="108" width="40" height="2.5" fill="url(#aTrailW)" opacity=".30"/>
+            <rect x="117" y="122.5" width="26" height="2" fill="url(#aTrailR)" opacity=".26"/>
+
+            <rect x="126" y="37" width="3" height="3" fill="#E8EDF2" opacity=".38"/>
+            <rect x="142" y="66" width="2.4" height="2.4" fill="#009ADA" opacity=".34"/>
+            <rect x="163" y="85" width="2" height="2" fill="#E7222E" opacity=".30"/>
+            <rect x="158" y="115" width="2.6" height="2.6" fill="#E8EDF2" opacity=".26"/>
+          </g>
+        </svg>
+      </span>
+    </h1>
+
+    <p class="hero__tagline reveal">Freude am Programmieren.</p>
+    <p class="hero__lede reveal">
+      Software engineering student and AI specialist from Rotterdam, working across
+      front-end, back-end and full stack. Technically grounded, eager to learn
+      and ambitious, and set on building software that actually adds value.
+    </p>
+
+    <div class="hero__cta reveal">
+      <a class="btn" href="#performance">Start the engine <svg viewBox="0 0 24 24" class="ico"><path d="M4 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn btn--ghost" href="#contact">Book a test drive</a>
+    </div>
+
+    <dl class="spec reveal">
+      <div class="spec__i"><dt>Engine</dt><dd>Full stack<span>JS &middot; TS &middot; PHP &middot; Java</span></dd></div>
+      <div class="spec__i"><dt>Drivetrain</dt><dd>xDrive<span>front + back end + AI</span></dd></div>
+      <div class="spec__i"><dt>Programme</dt><dd>HBO SD<span>Hogeschool Rotterdam</span></dd></div>
+      <div class="spec__i"><dt>Base</dt><dd>Ridderkerk<span>Netherlands</span></dd></div>
+    </dl>
+  </div>
+
+</section>
+
+<!-- ================= PROFILE ================= -->
+<section class="sec" id="profile">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <p class="sec__label"><i></i>01 <em>/</em> Driver profile</p>
+      <h2 class="sec__title">The engineer<br>behind the wheel</h2>
+    </header>
+
+    <div class="profile">
+      <div class="profile__text reveal">
+        <p class="lead">Motivated software engineering student with a strong interest in
+        front-end, back-end, full stack development and AI.</p>
+        <p>Technically grounded, eager to learn and ambitious. I want to build innovative,
+        modern software solutions that add value and make an impact. In practice that
+        means caring about the things nobody sees in a demo: error handling, tests, and code
+        the next engineer can read without a manual.</p>
+        <p>I work across the whole stack. HTML, SCSS, TypeScript and React on the front,
+        PHP, Node.js, Java and Python behind it, SQL underneath, and Kotlin or Swift when it
+        has to run in someone's hand. Currently completing HBO Software Developer at
+        Hogeschool Rotterdam and looking for the graduation internship that pushes me hardest.</p>
+        <p>The other half of me is a car person. Getting to write software for the company
+        that builds the machines I have read about for years is not just an application,
+        it is the obvious destination.</p>
+        <ul class="tags">
+          <li>AI Specialist</li><li>Analytical</li><li>Eager to learn</li><li>Ambitious</li>
+          <li>Problem-solving</li><li>Team player</li>
+        </ul>
+      </div>
+
+      <aside class="datacard reveal">
+        <div class="datacard__top">
+          <span class="datacard__badge">Technical data</span>
+          <span class="datacard__vin">VIN &middot; YA-2026-SWE</span>
+        </div>
+        <table class="datacard__table">
+          <tbody>
+            <tr><th>Model</th><td>Yavuz Atilgan</td></tr>
+            <tr><th>Series</th><td>Software Engineer Student</td></tr>
+            <tr><th>Specialism</th><td class="hl">AI Specialist</td></tr>
+            <tr><th>Base</th><td>Ridderkerk &middot; Netherlands</td></tr>
+            <tr><th>Status</th><td><span class="dot"></span>Available for internship</td></tr>
+            <tr><th>Front</th><td>HTML &middot; SCSS &middot; TypeScript &middot; React</td></tr>
+            <tr><th>Back</th><td>PHP &middot; Node.js &middot; Java &middot; Python</td></tr>
+            <tr><th>Mobile</th><td>Kotlin &middot; Swift</td></tr>
+            <tr><th>Target</th><td class="hl">BMW Group</td></tr>
+          </tbody>
+        </table>
+
+        <div class="langs">
+          <p class="langs__label">Languages</p>
+          <ul>
+            <li><span>Dutch</span><i class="lvl" data-lvl="5"></i></li>
+            <li><span>English</span><i class="lvl" data-lvl="5"></i></li>
+            <li><span>Turkish</span><i class="lvl" data-lvl="5"></i></li>
+            <li><span>Italian</span><i class="lvl" data-lvl="2"></i></li>
+          </ul>
+        </div>
+
+        <div class="datacard__grille" aria-hidden="true"></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PERFORMANCE / SKILLS ================= -->
+<section class="sec sec--alt" id="performance">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <p class="sec__label"><i></i>02 <em>/</em> Performance</p>
+      <h2 class="sec__title">Power output</h2>
+      <p class="sec__sub">Live telemetry per discipline. Redline at 9.000 rpm.</p>
+    </header>
+
+    <div class="gauges" id="gauges"></div>
+
+    <div class="stackbar reveal">
+      <p class="stackbar__label">Full toolbox</p>
+      <ul class="tags tags--lg">
+        <li>HTML</li><li>CSS</li><li>SCSS</li><li>JavaScript</li><li>TypeScript</li>
+        <li>React</li><li>Node.js</li><li>PHP</li><li>Java</li><li>Python</li>
+        <li>SQL</li><li>PhpMyAdmin</li><li>Kotlin</li><li>Swift</li>
+        <li>Git</li><li>GitHub</li><li>Azure DevOps</li><li>Linux</li>
+        <li>Android</li><li>iOS</li><li>AI</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GARAGE / PROJECTS ================= -->
+<section class="sec" id="garage">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <p class="sec__label"><i></i>03 <em>/</em> The garage</p>
+      <h2 class="sec__title">Selected builds</h2>
+      <p class="sec__sub">Four projects, four different engines.</p>
+    </header>
+
+    <div class="garage">
+
+      <article class="car reveal">
+        <div class="car__media">
+          <span class="car__idx">01</span>
+          <svg class="car__art" viewBox="0 0 400 200" aria-hidden="true">
+            <g class="car__grid"><path d="M0 160H400M0 120H400M0 80H400M0 40H400M80 0V200M160 0V200M240 0V200M320 0V200"/></g>
+            <polyline class="car__line" points="10,170 60,150 110,120 160,128 210,80 260,92 310,44 390,26"/>
+            <circle class="car__pt" cx="310" cy="44" r="5"/>
+          </svg>
+        </div>
+        <div class="car__body">
+          <h3>M-Telemetry</h3>
+          <p class="car__type">Real-time dashboard</p>
+          <p>Streams live vehicle-style sensor data over WebSockets into a 60 fps canvas
+          dashboard: rpm, throttle, g-forces and lap deltas, with replay and CSV export.</p>
+          <ul class="chips"><li>React</li><li>TypeScript</li><li>WebSocket</li><li>Node.js</li></ul>
+          <div class="car__stats">
+            <div><b>60 fps</b><span>at 5k msg/s</span></div>
+            <div><b>&lt; 40 ms</b><span>end-to-end latency</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="car reveal">
+        <div class="car__media">
+          <span class="car__idx">02</span>
+          <svg class="car__art" viewBox="0 0 400 200" aria-hidden="true">
+            <g class="car__grid"><path d="M0 160H400M0 120H400M0 80H400M0 40H400M80 0V200M160 0V200M240 0V200M320 0V200"/></g>
+            <rect class="car__box" x="40" y="60" width="90" height="80" rx="4"/>
+            <rect class="car__box" x="155" y="40" width="90" height="120" rx="4"/>
+            <rect class="car__box" x="270" y="80" width="90" height="60" rx="4"/>
+          </svg>
+        </div>
+        <div class="car__body">
+          <h3>Configurator</h3>
+          <p class="car__type">Product visualiser</p>
+          <p>A car configurator SPA: trims, paint, wheels and packages resolved against a
+          rules engine, with shareable build URLs and instant price recalculation.</p>
+          <ul class="chips"><li>TypeScript</li><li>React</li><li>SCSS</li><li>PHP API</li></ul>
+          <div class="car__stats">
+            <div><b>1.2 M</b><span>valid combinations</span></div>
+            <div><b>98</b><span>Lighthouse score</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="car reveal">
+        <div class="car__media">
+          <span class="car__idx">03</span>
+          <svg class="car__art" viewBox="0 0 400 200" aria-hidden="true">
+            <g class="car__grid"><path d="M0 160H400M0 120H400M0 80H400M0 40H400M80 0V200M160 0V200M240 0V200M320 0V200"/></g>
+            <path class="car__line" d="M30 100 H120 M280 100 H370"/>
+            <path class="car__line" d="M164 100 L186 66 M164 100 L186 134 M214 66 L236 100 M214 134 L236 100"/>
+            <circle class="car__pt" cx="150" cy="100" r="15"/>
+            <circle class="car__pt" cx="200" cy="60" r="15"/>
+            <circle class="car__pt" cx="200" cy="140" r="15"/>
+            <circle class="car__pt" cx="250" cy="100" r="15"/>
+          </svg>
+        </div>
+        <div class="car__body">
+          <h3>PitStop CI</h3>
+          <p class="car__type">Developer tooling</p>
+          <p>Pipeline runner with a live view of every job, isolated build steps and cached
+          layers, built to make a failing build obvious in one glance.</p>
+          <ul class="chips"><li>Java</li><li>Azure DevOps</li><li>Linux</li><li>SQL</li></ul>
+          <div class="car__stats">
+            <div><b>4&times;</b><span>faster pipelines</span></div>
+            <div><b>91%</b><span>test coverage</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="car reveal">
+        <div class="car__media">
+          <span class="car__idx">04</span>
+          <svg class="car__art" viewBox="0 0 400 200" aria-hidden="true">
+            <g class="car__grid"><path d="M0 160H400M0 120H400M0 80H400M0 40H400M80 0V200M160 0V200M240 0V200M320 0V200"/></g>
+            <g class="car__bars"><rect x="40" y="120" width="34" height="60"/><rect x="94" y="90" width="34" height="90"/><rect x="148" y="104" width="34" height="76"/><rect x="202" y="58" width="34" height="122"/><rect x="256" y="80" width="34" height="100"/><rect x="310" y="34" width="34" height="146"/></g>
+          </svg>
+        </div>
+        <div class="car__body">
+          <h3>Drive Sense</h3>
+          <p class="car__type">AI &amp; data</p>
+          <p>Classifies driving style from raw accelerometer and GPS traces, turning noisy
+          sensor logs into a scorecard, with a full data pipeline behind it.</p>
+          <ul class="chips"><li>Python</li><li>AI / ML</li><li>SQL</li><li>Kotlin app</li></ul>
+          <div class="car__stats">
+            <div><b>93%</b><span>accuracy</span></div>
+            <div><b>2.4 M</b><span>datapoints</span></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= ROUTE / EDUCATION ================= -->
+<section class="sec sec--alt" id="route">
+  <div class="wrap">
+    <header class="sec__head reveal">
+      <p class="sec__label"><i></i>04 <em>/</em> The route so far</p>
+      <h2 class="sec__title">Navigation history</h2>
+    </header>
+
+    <ol class="route">
+      <li class="route__i reveal">
+        <span class="route__yr">Next</span>
+        <div class="route__c">
+          <h3>Graduation internship <span class="route__tag">Destination</span></h3>
+          <p>The final stage of my degree: a graduation internship where I can ship
+          production software inside a real engineering culture, preferably one
+          that measures things in Nm and ms.</p>
+        </div>
+      </li>
+      <li class="route__i reveal">
+        <span class="route__yr">Now</span>
+        <div class="route__c">
+          <h3>HBO Software Developer</h3>
+          <p>Hogeschool Rotterdam. Full stack development, software architecture and
+          working in Scrum teams: the programme I am completing now.</p>
+        </div>
+      </li>
+      <li class="route__i reveal">
+        <span class="route__yr">HBO</span>
+        <div class="route__c">
+          <h3>Informatica, 2 years</h3>
+          <p>Hogeschool Rotterdam. Two years of computer science: algorithms, databases,
+          networking and the theory underneath everything I build now.</p>
+        </div>
+      </li>
+      <li class="route__i reveal">
+        <span class="route__yr">MBO</span>
+        <div class="route__c">
+          <h3>Software Developer</h3>
+          <p>GLR Grafisch Lyceum Rotterdam. Where the foundation was laid: my first real
+          codebases, first clients and the moment I realised debugging is genuinely fun.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= WHY BMW ================= -->
+<section class="sec bmw" id="bmw">
+  <div class="bmw__stripes" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <header class="sec__head sec__head--center reveal">
+      <p class="sec__label sec__label--center"><i></i>05 <em>/</em> Destination</p>
+      <h2 class="sec__title">Why BMW</h2>
+      <p class="sec__sub">Not because it is a famous logo. Because of how the cars are engineered.</p>
+    </header>
+
+    <div class="pillars">
+      <article class="pillar reveal">
+        <span class="pillar__n">01</span>
+        <h3>Engineering without compromise</h3>
+        <p>A near 50:50 weight distribution is not a marketing line, it is a decision that costs
+        money and effort. That is exactly the standard I want to hold my code to: do it properly,
+        even when nobody would notice the shortcut.</p>
+      </article>
+      <article class="pillar reveal">
+        <span class="pillar__n">02</span>
+        <h3>Software is the new drivetrain</h3>
+        <p>Modern BMWs run on millions of lines of code: driver assistance, electrification,
+        connected services, over-the-air updates. This is the most exciting time in history to be
+        a software engineer in automotive, and I want to be in that room.</p>
+      </article>
+      <article class="pillar reveal">
+        <span class="pillar__n">03</span>
+        <h3>Freude am Fahren, in code</h3>
+        <p>The best software feels like the best cars: responsive, predictable and quietly
+        confident. I obsess over that feeling (latency, motion, feedback) because it is
+        the difference between a tool people use and one they enjoy.</p>
+      </article>
+    </div>
+
+    <blockquote class="quote reveal">
+      <p>If they say it is impossible, it is impossible for them, not for me.</p>
+      <cite>Yavuz Atilgan</cite>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section class="sec contact" id="contact">
+  <div class="wrap">
+    <div class="contact__box reveal">
+      <div class="contact__l">
+        <p class="sec__label"><i></i>06 <em>/</em> Contact</p>
+        <h2 class="contact__title">Let us talk about<br>the internship.</h2>
+        <p class="contact__sub">Available for a graduation internship. CV, references and code
+        samples on request. Call, mail, or just open a pull request.</p>
+      </div>
+      <div class="contact__r">
+        <a class="link-row" href="mailto:yavuzatilgan7@gmail.com">
+          <span class="link-row__k">E-mail</span>
+          <span class="link-row__v">yavuzatilgan7@gmail.com</span>
+          <svg viewBox="0 0 24 24" class="ico"><path d="M4 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="link-row" href="tel:+31640700444">
+          <span class="link-row__k">Phone</span>
+          <span class="link-row__v">+31 6 40700444</span>
+          <svg viewBox="0 0 24 24" class="ico"><path d="M4 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="link-row" href="https://github.com/bmwme" target="_blank" rel="noopener">
+          <span class="link-row__k">GitHub</span>
+          <span class="link-row__v">github.com/bmwme</span>
+          <svg viewBox="0 0 24 24" class="ico"><path d="M4 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="link-row" href="https://github.com/Yavuz-1073705" target="_blank" rel="noopener">
+          <span class="link-row__k">School</span>
+          <span class="link-row__v">github.com/Yavuz-1073705</span>
+          <svg viewBox="0 0 24 24" class="ico"><path d="M4 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <div class="link-row link-row--static">
+          <span class="link-row__k">Based in</span>
+          <span class="link-row__v">Ridderkerk, Netherlands</span>
+        </div>
+        <a class="btn btn--block" href="mailto:yavuzatilgan7@gmail.com?subject=Graduation%20internship">
+          Send a message <svg viewBox="0 0 24 24" class="ico"><path d="M4 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__in">
+    <p class="foot__name">YAVUZ <b>A</b></p>
+    <p class="foot__slogan">Driven by code. Fueled by <b>BMW</b>.</p>
+    <p class="foot__note">Built from scratch. HTML, CSS and vanilla JavaScript. No framework, no template.
+      <span class="foot__hint">Tip: press <kbd>M</kbd></span>
+    </p>
+    <p class="foot__legal">
+      Independent personal portfolio. Not affiliated with, endorsed by or produced by BMW AG.
+      All trademarks belong to their respective owners.
+    </p>
+  </div>
+</footer>
+
+<!-- ================= HUD SPEEDOMETER ================= -->
+<button class="hud" id="hud" type="button" aria-label="Back to top">
+  <svg viewBox="0 0 100 100" aria-hidden="true">
+    <circle class="hud__ring-bg" cx="50" cy="50" r="44"/>
+    <circle class="hud__ring" id="hudArc" cx="50" cy="50" r="44"/>
+  </svg>
+  <b class="hud__val" id="hudVal">0</b>
+  <span class="hud__unit">KM/H</span>
+</button>
+
+<div class="launch" id="launch" aria-live="polite"><span class="launch__k">0-100 KM/H</span><b class="launch__t" id="launchT">0,00s</b></div>
+
+<div class="mtoast" id="mtoast" role="status">M MODE ENGAGED</div>
+
+<script is:inline>
+/* ============================================================
+   YAVUZ ATILGAN - PORTFOLIO
+   Vanilla JS. No dependencies.
+   ------------------------------------------------------------
+   EDIT YOUR SKILLS HERE  ->  see SKILLS array below
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+  var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+
+  /* ==========================================================
+     1. SKILL GAUGES  (rpm x1000, scale 0..9)
+     ========================================================== */
+  var SKILLS = [
+    { name: 'JavaScript / TypeScript', rpm: 8.6, meta: 'Daily driver' },
+    { name: 'React / SCSS',            rpm: 8.4, meta: 'Front-end' },
+    { name: 'PHP / Node.js',           rpm: 7.9, meta: 'Back-end' },
+    { name: 'Java / Python',           rpm: 7.6, meta: 'OOP & AI' },
+    { name: 'SQL / PhpMyAdmin',        rpm: 7.7, meta: 'Data' },
+    { name: 'Kotlin / Swift',          rpm: 7.1, meta: 'Android & iOS' }
+  ];
+
+  var GA_MAX = 9;
+  var GA_R = 44, GA_CX = 60, GA_CY = 60, GA_SPAN = 250, GA_START = -125;
+  var ARC_LEN = (GA_SPAN / 360) * 2 * Math.PI * GA_R;
+
+  function polar(deg, r) {
+    var rad = deg * Math.PI / 180;
+    return [GA_CX + r * Math.sin(rad), GA_CY - r * Math.cos(rad)];
+  }
+  function arcPath(a1, a2, r) {
+    var p1 = polar(a1, r), p2 = polar(a2, r);
+    var large = Math.abs(a2 - a1) > 180 ? 1 : 0;
+    return 'M' + p1[0].toFixed(2) + ' ' + p1[1].toFixed(2) +
+           ' A' + r + ' ' + r + ' 0 ' + large + ' 1 ' + p2[0].toFixed(2) + ' ' + p2[1].toFixed(2);
+  }
+
+  function buildGauges() {
+    var host = $('#gauges');
+    if (!host) return;
+
+    var ticks = '';
+    for (var i = 0; i <= GA_MAX; i++) {
+      var a = GA_START + (i / GA_MAX) * GA_SPAN;
+      var o = polar(a, 33), n = polar(a, i % 2 === 0 ? 25 : 29);
+      ticks += '<path class="g-tick" d="M' + o[0].toFixed(2) + ' ' + o[1].toFixed(2) +
+               ' L' + n[0].toFixed(2) + ' ' + n[1].toFixed(2) + '"/>';
+    }
+
+    var track = arcPath(GA_START, GA_START + GA_SPAN, GA_R);
+    var redzone = arcPath(GA_START + GA_SPAN * (8 / GA_MAX), GA_START + GA_SPAN, GA_R);
+
+    host.innerHTML = SKILLS.map(function (s) {
+      var p = clamp(s.rpm, 0, GA_MAX) / GA_MAX;
+      var deg = GA_START + p * GA_SPAN;
+      var off = ARC_LEN * (1 - p);
+      return '' +
+      '<div class="gauge reveal" style="--len:' + ARC_LEN.toFixed(1) + ';--off:' + off.toFixed(1) + ';--deg:' + deg.toFixed(1) + 'deg">' +
+        '<svg class="gauge__svg" viewBox="0 0 120 120" aria-hidden="true">' +
+          '<path class="g-track" d="' + track + '"/>' +
+          '<path class="g-red" d="' + redzone + '"/>' +
+          ticks +
+          '<path class="g-fill" d="' + track + '"/>' +
+          '<g class="g-needle"><path d="M60 60 L60 20"/></g>' +
+          '<circle class="g-hub" cx="60" cy="60" r="3.4"/>' +
+          '<text class="g-val" x="60" y="86" text-anchor="middle">' + s.rpm.toFixed(1) + '</text>' +
+          '<text class="g-unit" x="60" y="99" text-anchor="middle">RPM &#215;1000</text>' +
+        '</svg>' +
+        '<h3 class="gauge__name">' + s.name + '</h3>' +
+        '<p class="gauge__meta">' + s.meta + '</p>' +
+      '</div>';
+    }).join('');
+  }
+
+  /* ==========================================================
+     2. STARFIELD: stars that break apart
+     ========================================================== */
+  var Stars = (function () {
+    var cv = $('#stars'), ctx, W = 0, H = 0, dpr = 1, stars = [], shards = [], raf = null;
+    var mx = 0, my = 0, tmx = 0, tmy = 0, t = 0;
+
+    function resize() {
+      if (!cv) return;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var r = cv.getBoundingClientRect();
+      W = r.width; H = r.height;
+      cv.width = W * dpr; cv.height = H * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      seed();
+    }
+
+    function seed() {
+      var count = clamp(Math.round((W * H) / 7000), 60, 340);
+      stars = [];
+      for (var i = 0; i < count; i++) {
+        var depth = Math.random();
+        stars.push({
+          x: Math.random() * W, y: Math.random() * H,
+          hx: 0, hy: 0, vx: 0, vy: 0,
+          d: depth,
+          r: 0.35 + depth * 1.5,
+          a: 0.18 + Math.random() * 0.6,
+          tw: Math.random() * Math.PI * 2,
+          ts: 0.6 + Math.random() * 1.8
+        });
+      }
+    }
+
+    /* the "break": a shockwave from a point pushes every star outward
+       and spawns M-coloured shards that fly off and fade */
+    function burst(cx, cy, power) {
+      power = power || 1;
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        var dx = s.x - cx, dy = s.y - cy;
+        var dist = Math.sqrt(dx * dx + dy * dy) || 1;
+        var force = (power * 2600) / (dist + 120);
+        s.vx += (dx / dist) * force * 0.09;
+        s.vy += (dy / dist) * force * 0.09;
+      }
+      var cols = ['#009ADA', '#0653B6', '#E7222E', '#FFFFFF', '#FFFFFF'];
+      var n = Math.round(46 * power);
+      for (var j = 0; j < n; j++) {
+        var ang = Math.random() * Math.PI * 2;
+        var sp = 2.2 + Math.random() * 7.5;
+        shards.push({
+          x: cx + (Math.random() - 0.5) * 60,
+          y: cy + (Math.random() - 0.5) * 90,
+          vx: Math.cos(ang) * sp * 1.7,
+          vy: Math.sin(ang) * sp,
+          len: 8 + Math.random() * 30,
+          w: 0.8 + Math.random() * 2,
+          life: 1,
+          decay: 0.008 + Math.random() * 0.016,
+          col: cols[(Math.random() * cols.length) | 0]
+        });
+      }
+      if (!raf && visible) loop();
+    }
+
+    function frame() {
+      t += 0.016;
+      mx += (tmx - mx) * 0.05;
+      my += (tmy - my) * 0.05;
+      ctx.clearRect(0, 0, W, H);
+
+      for (var i = 0; i < stars.length; i++) {
+        var s = stars[i];
+        s.vx *= 0.94; s.vy *= 0.94;
+        s.hx += s.vx; s.hy += s.vy;
+        s.hx *= 0.985; s.hy *= 0.985;
+
+        var px = s.x + s.hx + mx * (6 + s.d * 26);
+        var py = s.y + s.hy + my * (6 + s.d * 26);
+        if (px < -20) px += W + 40; else if (px > W + 20) px -= W + 40;
+        if (py < -20) py += H + 40; else if (py > H + 20) py -= H + 40;
+
+        var tw = 0.65 + 0.35 * Math.sin(t * s.ts + s.tw);
+        ctx.globalAlpha = s.a * tw;
+        ctx.fillStyle = s.d > 0.86 ? '#BFE3F7' : '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(px, py, s.r, 0, 6.2832);
+        ctx.fill();
+      }
+
+      for (var k = shards.length - 1; k >= 0; k--) {
+        var sh = shards[k];
+        sh.x += sh.vx; sh.y += sh.vy;
+        sh.vx *= 0.975; sh.vy *= 0.975; sh.vy += 0.045;
+        sh.life -= sh.decay;
+        if (sh.life <= 0) { shards.splice(k, 1); continue; }
+        ctx.globalAlpha = Math.max(sh.life, 0) * 0.9;
+        ctx.strokeStyle = sh.col;
+        ctx.lineWidth = sh.w;
+        ctx.beginPath();
+        ctx.moveTo(sh.x, sh.y);
+        ctx.lineTo(sh.x - sh.vx * (sh.len / 8), sh.y - sh.vy * (sh.len / 8));
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    var visible = true;
+    function loop() {
+      if (!visible) { raf = null; return; }   // fully stop when off-screen
+      raf = requestAnimationFrame(loop);
+      frame();
+    }
+    function setVisible(v) {
+      visible = v;
+      document.body.classList.toggle('hero-paused', !v);
+      if (v && !raf && !reduced) loop();
+    }
+
+    function init() {
+      if (!cv) return;
+      ctx = cv.getContext('2d');
+      resize();
+      window.addEventListener('resize', resize);
+
+      if (reduced) { frame(); return; }
+
+      window.addEventListener('mousemove', function (e) {
+        tmx = (e.clientX / window.innerWidth - 0.5) * 2;
+        tmy = (e.clientY / window.innerHeight - 0.5) * 2;
+      }, { passive: true });
+
+      // pause the loop when the hero scrolls out of view
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (es) { setVisible(es[0].isIntersecting); })
+          .observe(cv);
+      }
+      document.addEventListener('visibilitychange', function () {
+        setVisible(!document.hidden && visible);
+      });
+      loop();
+    }
+
+    return { init: init, burst: burst, ready: function () { return !!ctx; } };
+  })();
+
+  /* ==========================================================
+     3. BOOT SEQUENCE
+     ========================================================== */
+  var LOG = [
+    ['Initialising drivetrain', 'OK'],
+    ['Loading M performance profile', 'OK'],
+    ['Calibrating skill telemetry', 'OK'],
+    ['Driver: YAVUZ ATILGAN', 'VERIFIED'],
+    ['Destination: BMW GROUP', 'SET']
+  ];
+
+  function boot() {
+    var el = $('#boot'), fill = $('#bootFill'), pct = $('#bootPct'), log = $('#bootLog');
+    if (!el) { start(); return; }
+
+    var seen = false;
+    try { seen = sessionStorage.getItem('ya-booted') === '1'; } catch (e) {}
+    var DUR = reduced ? 400 : (seen ? 1100 : 2900);
+
+    // log lines
+    if (log) {
+      LOG.forEach(function (row, i) {
+        var d = document.createElement('div');
+        var dots = new Array(Math.max(2, 30 - row[0].length)).join('.');
+        d.innerHTML = '<span>&rsaquo; ' + row[0] + ' ' + dots + '</span><b' +
+                      (row[1] === 'SET' ? ' class="warn"' : '') + '>' + row[1] + '</b>';
+        d.style.animationDelay = (0.25 + i * (DUR / 1000 - 0.5) / LOG.length) + 's';
+        log.appendChild(d);
+      });
+    }
+
+    var t0 = performance.now(), done = false;
+    function tick(now) {
+      var p = clamp((now - t0) / DUR, 0, 1);
+      var eased = 1 - Math.pow(1 - p, 2.2);
+      if (fill) fill.style.width = (eased * 100).toFixed(1) + '%';
+      if (pct) pct.textContent = Math.round(eased * 100);
+      if (p < 1) requestAnimationFrame(tick); else finish();
+    }
+    function finish() {
+      if (done) return; done = true;
+      try { sessionStorage.setItem('ya-booted', '1'); } catch (e) {}
+      if (fill) fill.style.width = '100%';
+      if (pct) pct.textContent = '100';
+      el.classList.add('done');
+      document.body.classList.remove('is-booting');
+      start();
+      setTimeout(function () { el.classList.add('gone'); }, 1200);
+    }
+
+    $('#bootSkip').addEventListener('click', finish);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') finish();
+    });
+    requestAnimationFrame(tick);
+  }
+
+  /* fired the moment the curtain opens */
+  function start() {
+    revealAll();
+    var hero = $('#hero');
+    if (!hero || reduced || !Stars.ready()) return;
+    var a = $('.hero__a');
+    setTimeout(function () {
+      var r = hero.getBoundingClientRect();
+      var cx = r.width / 2, cy = r.height / 2;
+      if (a) {
+        var ar = a.getBoundingClientRect();
+        cx = ar.left - r.left + ar.width / 2;
+        cy = ar.top - r.top + ar.height / 2;
+      }
+      Stars.burst(cx, cy, 1.35);
+    }, 260);
+  }
+
+  /* ==========================================================
+     4. REVEAL ON SCROLL
+     ========================================================== */
+  var io = null;
+  function revealAll() {
+    var items = $$('.reveal');
+    if (reduced || !('IntersectionObserver' in window)) {
+      items.forEach(function (n) { n.classList.add('in'); });
+      $$('.car,.gauge').forEach(function (n) { n.classList.add('in'); });
+      return;
+    }
+    if (!io) {
+      io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          var n = en.target;
+          var sibs = $$('.reveal', n.parentNode);
+          var idx = Math.max(0, sibs.indexOf(n));
+          n.style.transitionDelay = Math.min(idx * 90, 450) + 'ms';
+          n.classList.add('in');
+          io.unobserve(n);
+        });
+      }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
+    }
+    items.forEach(function (n) { io.observe(n); });
+  }
+
+  /* ==========================================================
+     5. NAV / PROGRESS / HUD
+     ========================================================== */
+  function chrome() {
+    var nav = $('#nav'), bar = $('#progressFill'), hud = $('#hud');
+    var hudArc = $('#hudArc'), hudVal = $('#hudVal');
+    var links = $$('#navLinks a');
+    var secs = links.map(function (a) { return $(a.getAttribute('href')); });
+    var HUD_LEN = 276.5;
+    var shownVal = 0, hudTarget = 0, hudRaf = null;
+    function hudEase() {
+      shownVal += (hudTarget - shownVal) * 0.2;
+      if (Math.abs(hudTarget - shownVal) < 0.5) shownVal = hudTarget;
+      if (hudVal) hudVal.textContent = Math.round(shownVal);
+      hudRaf = shownVal === hudTarget ? null : requestAnimationFrame(hudEase);
+    }
+
+    /* ---- 0-100 km/h launch timer ---- */
+    var launch = $('#launch'), launchT = $('#launchT');
+    var L = { armed: true, running: false, t0: 0, raf: null, hide: null };
+    function fmt(sec) { return sec.toFixed(2).replace('.', ',') + 's'; }
+    function liveTick() {
+      if (!L.running) return;
+      if (launchT) launchT.textContent = fmt((performance.now() - L.t0) / 1000);
+      L.raf = requestAnimationFrame(liveTick);
+    }
+    function launchReset() {
+      L.armed = true; L.running = false;
+      cancelAnimationFrame(L.raf); clearTimeout(L.hide);
+      if (launch) launch.classList.remove('show', 'good', 'bad', 'pop');
+      if (hud) hud.classList.remove('good', 'bad');
+    }
+    function launchCheck(kmh) {
+      if (!launch) return;
+      if (kmh === 0) { if (!L.armed) launchReset(); return; }
+      if (L.armed) {
+        L.armed = false; L.running = true; L.t0 = performance.now();
+        clearTimeout(L.hide);
+        launch.classList.remove('good', 'bad', 'pop');
+        launch.classList.add('show');
+        liveTick();
+        return;
+      }
+      if (L.running && kmh >= 100) {
+        L.running = false; cancelAnimationFrame(L.raf);
+        var sec = (performance.now() - L.t0) / 1000;
+        var good = sec < 7;
+        launchT.textContent = fmt(sec);
+        launch.classList.add(good ? 'good' : 'bad');
+        void launch.offsetWidth; launch.classList.add('pop');
+        if (hud) { hud.classList.remove('good', 'bad'); hud.classList.add(good ? 'good' : 'bad'); }
+        L.hide = setTimeout(function () {
+          launch.classList.remove('show');
+          if (hud) hud.classList.remove('good', 'bad');
+        }, 4000);
+      }
+    }
+
+    function onScroll() {
+      var y = window.scrollY || document.documentElement.scrollTop;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var p = max > 0 ? clamp(y / max, 0, 1) : 0;
+
+      if (bar) bar.style.width = (p * 100).toFixed(2) + '%';
+      nav.classList.toggle('stuck', y > 24);
+
+      if (hud) {
+        hud.classList.toggle('show', y > 260);
+        var target = Math.round(p * 300);
+        hudTarget = target;
+        if (!hudRaf) hudRaf = requestAnimationFrame(hudEase);
+        if (hudArc) hudArc.style.strokeDashoffset = (HUD_LEN * (1 - p)).toFixed(1);
+        if (!document.body.classList.contains('nav-open')) launchCheck(target);
+      }
+
+      // active nav link
+      var mid = y + window.innerHeight * 0.34, act = -1;
+      secs.forEach(function (s, i) { if (s && s.offsetTop <= mid) act = i; });
+      links.forEach(function (a, i) { a.classList.toggle('active', i === act); });
+    }
+
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () { onScroll(); ticking = false; });
+    }, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+    if (hud) hud.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+    // mobile menu
+    var burger = $('#navBurger');
+    if (burger) {
+      var lockY = 0;
+      var openNav = function () {
+        lockY = window.scrollY || window.pageYOffset || 0;
+        document.body.style.top = (-lockY) + 'px';
+        document.body.classList.add('nav-open');
+      };
+      var closeNav = function () {
+        if (!document.body.classList.contains('nav-open')) return;
+        document.body.classList.remove('nav-open');
+        document.body.style.top = '';
+        var html = document.documentElement, prev = html.style.scrollBehavior;
+        html.style.scrollBehavior = 'auto';
+        window.scrollTo(0, lockY);
+        html.style.scrollBehavior = prev;
+      };
+      burger.addEventListener('click', function () {
+        document.body.classList.contains('nav-open') ? closeNav() : openNav();
+      });
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNav(); });
+      window.addEventListener('resize', function () { if (window.innerWidth > 900) closeNav(); });
+      $$('#navLinks a').forEach(function (a) {
+        a.addEventListener('click', closeNav);
+      });
+    }
+  }
+
+  /* ==========================================================
+     6. INTERACTIONS: shatter on click + M mode easter egg
+     ========================================================== */
+  function extras() {
+    var name = $('#heroName'), hero = $('#hero');
+    if (name && hero) {
+      name.addEventListener('click', function () {
+        name.classList.remove('shatter');
+        void name.offsetWidth;
+        name.classList.add('shatter');
+        var r = hero.getBoundingClientRect(), nr = name.getBoundingClientRect();
+        Stars.burst(nr.left - r.left + nr.width * 0.78, nr.top - r.top + nr.height / 2, 1.1);
+      });
+    }
+
+    var toast = $('#mtoast'), tid = null;
+    function toggleM() {
+      var on = document.body.classList.toggle('m-mode');
+      if (!toast) return;
+      toast.textContent = on ? 'M MODE ENGAGED' : 'COMFORT MODE';
+      toast.classList.add('show');
+      clearTimeout(tid);
+      tid = setTimeout(function () { toast.classList.remove('show'); }, 1800);
+    }
+    document.addEventListener('keydown', function (e) {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      var tag = (e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea') return;
+      if (e.key === 'm' || e.key === 'M') toggleM();
+    });
+
+    // placeholder links -> tell the visitor instead of going nowhere
+    $$('[data-fill]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        if (a.getAttribute('href') === '#') {
+          e.preventDefault();
+          var v = $('.link-row__v', a);
+          if (v && !v.dataset.warned) { v.dataset.warned = '1'; v.textContent += '  (add your URL)'; }
+        }
+      });
+    });
+  }
+
+
+  /* language proficiency dots, driven by data-lvl */
+  function buildLanguages() {
+    $$('.lvl').forEach(function (el) {
+      var lvl = parseInt(el.getAttribute('data-lvl'), 10) || 0;
+      var html = '';
+      for (var i = 1; i <= 5; i++) html += '<b class="' + (i <= lvl ? 'on' : '') + '"></b>';
+      el.innerHTML = html;
+      var li = el.parentNode;
+      var label = li.firstElementChild ? li.firstElementChild.textContent : '';
+      el.setAttribute('aria-label', label + ': ' + lvl + ' out of 5');
+      el.setAttribute('role', 'img');
+    });
+  }
+
+  /* ==========================================================
+     BOOTSTRAP
+     ========================================================== */
+  buildLanguages();
+  buildGauges();
+  Stars.init();
+  chrome();
+  extras();
+  boot();
+})();
+
+</script>
 </body>
-
 </html>
